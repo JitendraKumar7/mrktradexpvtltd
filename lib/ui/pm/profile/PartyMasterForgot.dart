@@ -127,7 +127,7 @@ class _PartyMasterForgotState extends State<PartyMasterForgotScreen> {
                         pass2.length > 3) {
                       if (pass2 == pass3) {
                         ProgressDialog dialog =
-                            new ProgressDialog(context, isDismissible: false);
+                            ProgressDialog(context, isDismissible: false);
                         dialog.show();
                         ApiClient()
                             .resetPass(loginId, pass1, pass2)

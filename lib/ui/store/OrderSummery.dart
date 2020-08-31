@@ -77,7 +77,7 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
 
               print(params.toString());
               ProgressDialog dialog =
-                  new ProgressDialog(context, isDismissible: false);
+                  ProgressDialog(context, isDismissible: false);
               dialog.style(
                   message: 'Please Wait...',
                   progressWidget: CircularProgressIndicator());
@@ -461,41 +461,41 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
     return paymentCode == null
         ? SizedBox(width: 0)
         : Expanded(
-      child: GFButton(
-          size: 45,
-          text: 'PAY NOW',
-          fullWidthButton: true,
-          type: GFButtonType.outline,
-          onPressed: () {
-            if (_name.text.length > 4 &&
-                _mobile.text.length > 9 &&
-                _billAddress.text.length > 4) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      WebViewFlutter(paymentCode: paymentCode),
-                ),
-              ).then(
-                    (value) => _bookOrderNow(),
-              );
-            }
-            // Error
-            else {
-              AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.ERROR,
-                  animType: AnimType.RIGHSLIDE,
-                  headerAnimationLoop: false,
-                  title: 'Required',
-                  desc: 'Name, Phone and Address is required',
-                  btnOkOnPress: () {},
-                  btnOkIcon: Icons.cancel,
-                  btnOkColor: Colors.red)
-                  .show();
-            }
-          }),
-    );
+            child: GFButton(
+                size: 45,
+                text: 'PAY NOW',
+                fullWidthButton: true,
+                type: GFButtonType.outline,
+                onPressed: () {
+                  if (_name.text.length > 4 &&
+                      _mobile.text.length > 9 &&
+                      _billAddress.text.length > 4) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            WebViewFlutter(paymentCode: paymentCode),
+                      ),
+                    ).then(
+                      (value) => _bookOrderNow(),
+                    );
+                  }
+                  // Error
+                  else {
+                    AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.ERROR,
+                            animType: AnimType.RIGHSLIDE,
+                            headerAnimationLoop: false,
+                            title: 'Required',
+                            desc: 'Name, Phone and Address is required',
+                            btnOkOnPress: () {},
+                            btnOkIcon: Icons.cancel,
+                            btnOkColor: Colors.red)
+                        .show();
+                  }
+                }),
+          );
   }
 
   @override

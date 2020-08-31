@@ -88,7 +88,7 @@ class ProductDetails {
 
   String get stock => _stock;
 
-  String get checkedStock => _checkedStock;
+  String get checkStock => _checkedStock;
 
   String get price => _price;
 

@@ -91,22 +91,12 @@ class _AdminDashboardState extends State<AdminDashboardScreen> {
             Icons.perm_identity,
             size: 48,
           )
-        : Image.network(
-            profile.image,
-            height: 80,
-            width: 80,
-            loadingBuilder: (BuildContext context, Widget child,
-                ImageChunkEvent loadingProgress) {
-              return GFLoader(size: 48);
-            },
-            errorBuilder: (BuildContext context, Object exception,
-                StackTrace stackTrace) {
-              return Icon(
-                Icons.perm_identity,
-                size: 48,
-              );
-            },
-          );
+        : FadeInImage.assetNetwork(
+      width: 80,
+      height: 80,
+      image: profile.image,
+      placeholder: 'images/iv_empty.png',
+    );
   }
 
   String getProfileName() {

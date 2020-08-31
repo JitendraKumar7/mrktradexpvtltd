@@ -108,7 +108,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                           params['password'] = password2;
 
                           ProgressDialog dialog =
-                              new ProgressDialog(context, isDismissible: false);
+                              ProgressDialog(context, isDismissible: false);
                           dialog.show();
                           ApiClient()
                               .updatePartyMaster(params)
@@ -338,7 +338,7 @@ class _BankingScreenState extends State<BankInfoScreen> {
                         params['account_number'] = text3;
 
                         ProgressDialog dialog =
-                            new ProgressDialog(context, isDismissible: false);
+                            ProgressDialog(context, isDismissible: false);
                         dialog.show();
                         ApiClient().updatePartyMaster(params).then((value) => {
                               setState(() {
@@ -630,7 +630,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         params['alternative_contact_number'] = mobile;
 
                         ProgressDialog dialog =
-                            new ProgressDialog(context, isDismissible: false);
+                            ProgressDialog(context, isDismissible: false);
                         dialog.show();
                         ApiClient().updatePartyMaster(params).then((value) => {
                               setState(() {

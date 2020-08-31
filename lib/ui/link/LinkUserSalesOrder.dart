@@ -84,7 +84,7 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
                         title: Row(
                           children: <Widget>[
                             Expanded(
-                              child: Text('#${item['booking_id']}'),
+                              child: Text('#$id'),
                             ),
                             Text(item['status'].toString().toUpperCase())
                           ],

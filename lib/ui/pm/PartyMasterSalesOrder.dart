@@ -83,7 +83,7 @@ class _PartySalesOrderState extends State<PartySalesOrderScreen> {
                         title: Row(
                           children: <Widget>[
                             Expanded(
-                              child: Text('#${item['order_id']}'),
+                              child: Text('#${item['id']}'),
                             ),
                             Text(item['status'].toUpperCase())
                           ],

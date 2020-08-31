@@ -58,7 +58,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget showStock() {
-    if (_productDetails.checkedStock == '0') {
+    if (_productDetails.checkStock == '1') {
       return Text(
         'IN STOCK - ' + _productDetails.stock ??
             '0' + ' ' + _productDetails.unit,
@@ -418,6 +418,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     _productDetails.gstRate,
                     _productDetails.name,
                     _productDetails.moq,
+                    _productDetails.stock,
+                    _productDetails.checkStock,
                     item.paramsOne + ' ' + item.paramsTwo));
                 String key = AppConstants.USER_CART_DATA;
                 AppPreferences.setString(key, jsonEncode(cart));

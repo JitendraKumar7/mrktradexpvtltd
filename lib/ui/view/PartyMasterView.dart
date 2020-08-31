@@ -1,3 +1,5 @@
+import 'package:image_picker/image_picker.dart';
+
 import '../base/libraryExport.dart';
 
 class PartyMasterViewScreen extends StatefulWidget {
@@ -70,6 +72,55 @@ class _PartyMasterViewState extends State<PartyMasterViewScreen> {
     loadProfile();
   }
 
+  Widget getProfile() {
+    String _imagePath = result['image'] ?? '';
+    return InkWell(
+      onTap: () {
+        ProgressDialog dialog = ProgressDialog(context);
+        ImagePicker()
+            .getImage(
+                source: ImageSource.gallery,
+                imageQuality: 85,
+                maxHeight: 512,
+                maxWidth: 512)
+            .then((pickedFile) => {
+                  print('picked file path ${pickedFile.path}'),
+                  dialog.show(),
+                  ApiClient().uploadFile(pickedFile.path).then((value) => {
+                        setState(() {
+                          Map response = value.data;
+                          _imagePath = response['result'];
+                          profile['image'] = response['result'];
+                          print('Upload File Result ${value.data}');
+                          ApiClient()
+                              .updatePartyMaster(profile)
+                              .then((value) => {
+                                    dialog.hide().then((hide) => {
+                                          setState(() {
+                                            result = null;
+                                            loadProfile();
+                                            print(value.data);
+                                          })
+                                        })
+                                  });
+                        })
+                      }),
+                });
+      },
+      child: _imagePath.isEmpty
+          ? Icon(
+              Icons.person,
+              size: 48,
+            )
+          : FadeInImage.assetNetwork(
+              width: 80,
+              height: 80,
+              image: _imagePath,
+              placeholder: 'images/iv_empty.png',
+            ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String address0 = '';
@@ -105,6 +156,10 @@ class _PartyMasterViewState extends State<PartyMasterViewScreen> {
             : ListView(
                 padding: EdgeInsets.only(top: 24, bottom: 24),
                 children: <Widget>[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: getProfile(),
+                  ),
                   Stack(
                     alignment: Alignment.centerRight,
                     children: <Widget>[

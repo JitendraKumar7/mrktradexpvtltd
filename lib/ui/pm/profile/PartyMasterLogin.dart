@@ -90,7 +90,7 @@ class _PartyMasterLoginState extends State<PartyMasterLoginScreen> {
                     String loginId = _loginId.text;
                     if (loginId.length > 9) {
                       ProgressDialog dialog =
-                          new ProgressDialog(context, isDismissible: false);
+                          ProgressDialog(context, isDismissible: false);
                       dialog.show();
                       ApiClient().forgetPasswordOtp(loginId).then((value) => {
                             setState(() {
@@ -150,7 +150,7 @@ class _PartyMasterLoginState extends State<PartyMasterLoginScreen> {
                     String password = _password.text;
                     if (loginId.length > 9 && password.length > 3) {
                       ProgressDialog dialog =
-                          new ProgressDialog(context, isDismissible: false);
+                          ProgressDialog(context, isDismissible: false);
                       dialog.show();
                       ApiClient()
                           .loginPartyMaster(loginId, password)

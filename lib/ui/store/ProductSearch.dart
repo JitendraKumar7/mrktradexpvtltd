@@ -32,16 +32,63 @@ class _ProductSearchState extends State<ProductSearchScreen> {
           })
         });
 
+    onBackPressed();
+  }
+
+  onBackPressed() {
+    print('Back Pressed');
     String key = AppConstants.USER_CART_DATA;
     AppPreferences.getString(key).then((value) => {
           setState(() {
             if (value != null) {
+              cart = List<CartSummery>();
               for (Map json in jsonDecode(value)) {
                 cart.add(CartSummery.fromJson(json));
               }
             }
           })
         });
+  }
+
+  Widget getCart() {
+    return cart.isEmpty
+        ? IconButton(
+        icon: Icon(
+          Icons.shopping_cart,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => OrderCartScreen(),
+            ),
+          ).then(
+                (value) => onBackPressed(),
+          );
+        })
+        : GFIconBadge(
+      child: GFIconButton(
+        size: GFSize.LARGE,
+        color: Colors.transparent,
+        icon: Icon(Icons.shopping_cart, color: Colors.white),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => OrderCartScreen(),
+            ),
+          ).then(
+                (value) => onBackPressed(),
+          );
+        },
+      ),
+      counterChild: GFBadge(
+        shape: GFBadgeShape.circle,
+        color: Colors.orangeAccent,
+        child: Text(cart.length.toString()),
+      ),
+    );
   }
 
   @override
@@ -53,6 +100,9 @@ class _ProductSearchState extends State<ProductSearchScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text('Search Products'),
+        actions: <Widget>[
+          getCart(),
+        ],
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -119,6 +169,8 @@ class _ProductSearchState extends State<ProductSearchScreen> {
                                 ).then((value) => {
                                       if (value && widget.isBack)
                                         Navigator.of(context).pop(true)
+                                      else
+                                        onBackPressed()
                                     });
                               },
                               child: ListTile(

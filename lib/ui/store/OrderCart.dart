@@ -75,11 +75,12 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
               : ListView.builder(
                   itemCount: cartSummery.length,
                   itemBuilder: (BuildContext context, int index) {
+                    CartSummery item = cartSummery[index];
                     return Card(
                       elevation: 8.0,
                       child: ListTile(
                         leading: FadeInImage.assetNetwork(
-                          image: cartSummery[index].image,
+                          image: item.image,
                           placeholder: 'images/iv_empty.png',
                           height: 80,
                           width: 60,
@@ -87,7 +88,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                         title: Row(children: <Widget>[
                           Expanded(
                             child: Text(
-                              cartSummery[index].product,
+                              item.product,
                               style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.black,
@@ -105,13 +106,12 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                                   animType: AnimType.BOTTOMSLIDE,
                                   desc: 'Are you sure, you want to remove',
                                   btnCancelOnPress: () {
-                                    print("Cancel On Pressed");
+                                    print('Cancel On Pressed');
                                   },
                                   btnOkOnPress: () {
                                     setState(() {
                                       cartSummery.removeWhere((itemToCheck) =>
-                                          itemToCheck.id ==
-                                          cartSummery[index].id);
+                                          itemToCheck.id == item.id);
                                       String key = AppConstants.USER_CART_DATA;
                                       AppPreferences.setString(
                                           key, jsonEncode(cartSummery));
@@ -124,7 +124,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                         ]),
                         subtitle: Row(children: <Widget>[
                           Text(
-                            "₹ " + cartSummery[index].amount + "/- ",
+                            '₹ ${cartSummery[index].amount}/-',
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.black,
@@ -134,9 +134,9 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                           IconButton(
                             icon: Icon(Icons.remove_circle_outline),
                             onPressed: () {
-                              String value = cartSummery[index].controller.text;
+                              String value = item.controller.text;
                               if (int.parse(value) > 1) {
-                                cartSummery[index].controller.text =
+                                item.controller.text =
                                     (int.parse(value) - 1).toString();
                               }
                             },
@@ -146,15 +146,35 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                               maxLines: 1,
                               keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.done,
-                              controller: cartSummery[index].controller,
+                              controller: item.controller,
                             ),
                           ),
                           IconButton(
                             icon: Icon(Icons.add_circle_outline),
                             onPressed: () {
-                              String value = cartSummery[index].controller.text;
-                              cartSummery[index].controller.text =
-                                  (int.parse(value) + 1).toString();
+                              int value = int.tryParse(item.controller.text);
+                              int stock = int.tryParse(item.stock);
+                              value = value + 1;
+
+                              if (item.checkStock == '0') {
+                                item.controller.text = value.toString();
+                              }
+                              //
+                              else if (stock >= value) {
+                                item.controller.text = value.toString();
+                              }
+                              //
+                              else {
+                                AwesomeDialog(
+                                        title: 'Overflow',
+                                        context: context,
+                                        desc: 'Only $stock items in stock',
+                                        headerAnimationLoop: false,
+                                        animType: AnimType.TOPSLIDE,
+                                        dialogType: DialogType.WARNING,
+                                        btnOkOnPress: () {})
+                                    .show();
+                              }
                             },
                           ),
                         ]),

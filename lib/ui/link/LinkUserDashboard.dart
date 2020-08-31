@@ -87,25 +87,15 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
   Widget getProfile() {
     return profile.image.isEmpty
         ? Icon(
-            Icons.perm_identity,
-            size: 48,
-          )
-        : Image.network(
-            profile.image,
-            height: 80,
-            width: 80,
-            loadingBuilder: (BuildContext context, Widget child,
-                ImageChunkEvent loadingProgress) {
-              return GFLoader(size: 48);
-            },
-            errorBuilder: (BuildContext context, Object exception,
-                StackTrace stackTrace) {
-              return Icon(
-                Icons.perm_identity,
-                size: 48,
-              );
-            },
-          );
+      Icons.perm_identity,
+      size: 48,
+    )
+        : FadeInImage.assetNetwork(
+      width: 80,
+      height: 80,
+      image: profile.image,
+      placeholder: 'images/iv_empty.png',
+    );
   }
 
   String getProfileName() {
@@ -259,7 +249,7 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             Divider(),
             ListTile(
               leading: Icon(Icons.exit_to_app),
-              title: Text('Logout'),
+              title: Text('Logout (Link User)'),
               onTap: () {
                 Navigator.pop(context);
                 AwesomeDialog(
@@ -283,8 +273,9 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  DashboardScreen(widget.konnectDetails)),
+                            builder: (BuildContext context) =>
+                                DashboardScreen(widget.konnectDetails),
+                          ),
                           (Route<dynamic> route) => false);
                     }).show();
               },

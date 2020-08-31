@@ -2,10 +2,10 @@ import './base/libraryExport.dart';
 
 class CategoryScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _CategoryScreenState();
+  State<StatefulWidget> createState() => _CategoryState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
+class _CategoryState extends State<CategoryScreen> {
   List<CartSummery> cart = List<CartSummery>();
   List<Map> _category;
   List<Map> _slider;
@@ -15,7 +15,33 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
+    HttpClient().landingPage().then((source) => {
+          setState(() {
+            Map response = jsonDecode(source);
+            if (response['status'] == '200' && response['result'] == 1) {
+              HttpClient().getCoverImage().then((source) => {
+                    setState(() {
+                      webStore();
+                      loadListing(0);
+                      Map response = jsonDecode(source);
+                      if (response['status'] == '200') {
+                        _slider = List<Map>();
+                        response['result'].forEach((v) {
+                          _slider.add(v);
+                        });
+                      }
+                    })
+                  });
+            } else {
+              webStore();
+            }
+          })
+        });
 
+    onBackPressed();
+  }
+
+  webStore() {
     ApiClient().getWebstoreL1().then((value) => {
           print(value.data),
           setState(() {
@@ -28,28 +54,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             }
           }),
         });
-    HttpClient().landingPage().then((source) => {
-          setState(() {
-            Map response = jsonDecode(source);
-            if (response['status'] == '200' && response['result'] == 1) {
-              HttpClient().getCoverImage().then((source) => {
-                    setState(() {
-                      Map response = jsonDecode(source);
-                      if (response['status'] == '200') {
-                        _slider = List<Map>();
-                        response['result'].forEach((v) {
-                          _slider.add(v);
-                        });
-                      }
-                      // loadListing
-                      loadListing(0);
-                    })
-                  });
-            }
-          })
-        });
-
-    onBackPressed();
   }
 
   onBackPressed() {
@@ -141,24 +145,26 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Widget getSlider(double _width) {
     return _slider != null
-        ? GFCarousel(
-            height: 200,
-            items: _slider.map((_image) {
-              return FadeInImage.assetNetwork(
+        ? Padding(
+            padding: EdgeInsets.only(bottom: 12),
+            child: GFCarousel(
                 height: 200,
-                width: _width,
-                image: _image['cover_image'],
-                placeholder: 'images/iv_empty.png',
-              );
-            }).toList(),
-            autoPlay: true,
-            pagination: true,
-            viewportFraction: 1.0,
-            onPageChanged: (index) {
-              setState(() {
-                index;
-              });
-            })
+                items: _slider.map((_image) {
+                  return FadeInImage.assetNetwork(
+                    height: 200,
+                    width: _width,
+                    image: _image['cover_image'],
+                    placeholder: 'images/iv_empty.png',
+                  );
+                }).toList(),
+                autoPlay: true,
+                pagination: true,
+                viewportFraction: 1.0,
+                onPageChanged: (index) {
+                  setState(() {
+                    index;
+                  });
+                }))
         : SizedBox(height: 0);
   }
 
@@ -174,78 +180,143 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 print('item value 2 $product');
                 children.add(
                   InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                ProductDetailScreen(product['id']),
-                          ),
-                        ).then(
-                          (value) => {onBackPressed()},
-                        );
-                      },
-                      child: Column(children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: FadeInImage.assetNetwork(
-                            image: product['image'],
-                            placeholder: 'images/iv_empty.png',
-                            height: 80,
-                          ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              ProductDetailScreen(product['id']),
                         ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(3, 0, 0, 9),
-                          child: Text(
-                            product['print_name'],
-                            textAlign: TextAlign.left,
-                            style:
-                                TextStyle(fontSize: 12, color: Colors.black87),
-                          ),
+                      ).then(
+                        (value) => {onBackPressed()},
+                      );
+                    },
+                    child: Column(children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(12),
+                        child: FadeInImage.assetNetwork(
+                          image: product['image'],
+                          placeholder: 'images/iv_empty.png',
+                          height: 80,
                         ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(3, 0, 0, 9),
-                          child: GFRating(
-                              value: 3.5, size: 18, color: Colors.orange),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(3, 0, 0, 9),
+                        child: Text(
+                          product['print_name'],
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 12, color: Colors.black87),
                         ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(3, 0, 0, 9),
-                          child: Text(
-                            'Price ₹ ${product['trade_price']}',
-                            textAlign: TextAlign.left,
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.orange),
-                          ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(3, 0, 0, 9),
+                        child: GFRating(
+                            value: 3.5, size: 18, color: Colors.orange),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(3, 0, 0, 9),
+                        child: Text(
+                          'Price ₹ ${product['trade_price']}',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 15, color: Colors.orange),
                         ),
-                      ])),
+                      ),
+                    ]),
+                  ),
                 );
               }
             });
             return Column(children: <Widget>[
               Container(
-                height: 50,
                 width: _width,
-                decoration: BoxDecoration(color: Colors.blue.shade300),
-                child: Center(
+                decoration: BoxDecoration(color: Colors.grey.shade300),
+                child: Padding(
+                  padding: EdgeInsets.all(18),
                   child: Text(
-                    '${item.keys}',
+                    '${item.keys.first.toString().toUpperCase()}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    style: TextStyle(fontSize: 15, color: Colors.black87),
                   ),
                 ),
               ),
               Container(
-                height: 200,
+                height: 182,
                 child: ListView(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   children: children,
                 ),
               ),
-              Divider(),
             ]);
           }).toList())
         : SizedBox(height: 0);
+  }
+
+  Widget getCategory(double _width) {
+    return Column(children: <Widget>[
+      _list != null
+          ? Container(
+              width: _width,
+              decoration: BoxDecoration(color: Colors.grey.shade300),
+              child: Padding(
+                padding: EdgeInsets.all(18),
+                child: Text(
+                  'ALL CATEGORY',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15, color: Colors.black87),
+                ),
+              ),
+            )
+          : SizedBox(height: 0),
+      StaggeredGridView.countBuilder(
+        crossAxisCount: 2,
+        mainAxisSpacing: 1,
+        crossAxisSpacing: 1,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: _category.length,
+        staggeredTileBuilder: (int index) =>
+            index == _category.length - 1 && _category.length.isOdd
+                ? StaggeredTile.fit(2)
+                : StaggeredTile.fit(1),
+        itemBuilder: (BuildContext context, int index) => Card(
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      SubCategoryL2Screen(id: _category[index]['id']),
+                ),
+              ).then(
+                (value) => onBackPressed(),
+              );
+            },
+            child: Column(children: <Widget>[
+              SizedBox(height: 20),
+              FadeInImage.assetNetwork(
+                placeholder: 'images/iv_empty.png',
+                image: _category[index]['image'],
+                fit: BoxFit.contain,
+                height: 60,
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(6, 12, 6, 18),
+                child: Text(
+                  _category[index]['category'],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold),
+                ),
+              )
+            ]),
+          ),
+          elevation: 3.0,
+        ),
+      )
+    ]);
   }
 
   @override
@@ -272,10 +343,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
               scrollDirection: Axis.vertical,
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: height),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(12, 24, 12, 24),
-                  child: Column(children: <Widget>[
-                    MaterialButton(
+                child: Column(children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(12),
+                    child: MaterialButton(
                       height: 55,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
@@ -311,76 +382,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         ],
                       ),
                     ),
-                    getSlider(width),
-                    getListData(width),
-                    StaggeredGridView.countBuilder(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 3.0,
-                      crossAxisSpacing: 3.0,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: _category.length,
-                      staggeredTileBuilder: (int index) =>
-                          index == _category.length - 1 &&
-                                  _category.length.isOdd
-                              ? StaggeredTile.fit(2)
-                              : StaggeredTile.fit(1),
-                      itemBuilder: (BuildContext context, int index) => Card(
-                        elevation: 8.0,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    _SubCategoryL2Screen(
-                                        id: _category[index]['id']),
-                              ),
-                            ).then(
-                              (value) => onBackPressed(),
-                            );
-                          },
-                          child: Column(children: <Widget>[
-                            SizedBox(height: 20),
-                            FadeInImage.assetNetwork(
-                              placeholder: 'images/iv_empty.png',
-                              image: _category[index]['image'],
-                              fit: BoxFit.contain,
-                              height: 60,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(6, 12, 6, 18),
-                              child: Text(
-                                _category[index]['category'],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ]),
-                        ),
-                      ),
-                    )
-                  ]),
-                ),
+                  ),
+                  getSlider(width),
+                  getListData(width),
+                  getCategory(width),
+                ]),
               ),
             ),
     );
   }
 }
 
-class _SubCategoryL2Screen extends StatefulWidget {
+class SubCategoryL2Screen extends StatefulWidget {
   final int id;
 
-  _SubCategoryL2Screen({Key key, @required this.id}) : super(key: key);
+  SubCategoryL2Screen({Key key, @required this.id}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _SubCategoryL2ScreenState();
+  State<StatefulWidget> createState() => _SubCategoryL2State();
 }
 
-class _SubCategoryL2ScreenState extends State<_SubCategoryL2Screen> {
+class _SubCategoryL2State extends State<SubCategoryL2Screen> {
   List<CartSummery> cart = List<CartSummery>();
   List<Map> _list;
 
@@ -529,7 +551,7 @@ class _SubCategoryL2ScreenState extends State<_SubCategoryL2Screen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      _SubCategoryL3Screen(id: id),
+                                      SubCategoryL3Screen(id: id),
                                 ),
                               ).then(
                                 (value) => onBackPressed(),
@@ -565,16 +587,16 @@ class _SubCategoryL2ScreenState extends State<_SubCategoryL2Screen> {
   }
 }
 
-class _SubCategoryL3Screen extends StatefulWidget {
+class SubCategoryL3Screen extends StatefulWidget {
   final int id;
 
-  _SubCategoryL3Screen({Key key, @required this.id}) : super(key: key);
+  SubCategoryL3Screen({Key key, @required this.id}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _SubCategoryL3ScreenState();
+  State<StatefulWidget> createState() => _SubCategoryL3State();
 }
 
-class _SubCategoryL3ScreenState extends State<_SubCategoryL3Screen> {
+class _SubCategoryL3State extends State<SubCategoryL3Screen> {
   List<CartSummery> cart = List<CartSummery>();
   List<Map> _list;
 
@@ -719,7 +741,7 @@ class _SubCategoryL3ScreenState extends State<_SubCategoryL3Screen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      _SubCategoryL4Screen(id: id),
+                                      SubCategoryL4Screen(id: id),
                                 ),
                               ).then(
                                 (value) => onBackPressed(),
@@ -753,16 +775,16 @@ class _SubCategoryL3ScreenState extends State<_SubCategoryL3Screen> {
   }
 }
 
-class _SubCategoryL4Screen extends StatefulWidget {
+class SubCategoryL4Screen extends StatefulWidget {
   final int id;
 
-  _SubCategoryL4Screen({Key key, @required this.id}) : super(key: key);
+  SubCategoryL4Screen({Key key, @required this.id}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _SubCategoryL4ScreenState();
+  State<StatefulWidget> createState() => _SubCategoryL4State();
 }
 
-class _SubCategoryL4ScreenState extends State<_SubCategoryL4Screen> {
+class _SubCategoryL4State extends State<SubCategoryL4Screen> {
   List<CartSummery> cart = List<CartSummery>();
   List<Map> _list;
 

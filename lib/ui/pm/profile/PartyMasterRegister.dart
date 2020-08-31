@@ -231,62 +231,58 @@ class _PartyMasterRegisterState extends State<PartyMasterRegisterScreen> {
                         params['alternative_contact_number'] = mobile2;
 
                         ProgressDialog dialog =
-                            new ProgressDialog(context, isDismissible: false);
+                            ProgressDialog(context, isDismissible: false);
                         dialog.show();
-                        ApiClient()
-                            .addPartyMaster(params)
-                            .then((value) => {
-                                  setState(() {
-                                    dialog.hide();
-                                    print(value.data);
-                                    Map<String, dynamic> response = value.data;
-                                    if (response['status'] == '200') {
-                                      UserProfile profile =
-                                          UserProfile.fromJson(
-                                              response['result']);
+                        ApiClient().addPartyMaster(params).then((value) => {
+                              setState(() {
+                                dialog.hide();
+                                print(value.data);
+                                Map<String, dynamic> response = value.data;
+                                if (response['status'] == '200') {
+                                  UserProfile profile =
+                                      UserProfile.fromJson(response['result']);
 
-                                      UserLogin login =
-                                          UserLogin(UserType.MASTER, true);
+                                  UserLogin login =
+                                      UserLogin(UserType.MASTER, true);
 
-                                      String key1 =
-                                          AppConstants.USER_LOGIN_DATA;
-                                      String key2 =
-                                          AppConstants.USER_LOGIN_CREDENTIAL;
+                                  String key1 = AppConstants.USER_LOGIN_DATA;
+                                  String key2 =
+                                      AppConstants.USER_LOGIN_CREDENTIAL;
 
-                                      AppPreferences.setString(
-                                          key2, jsonEncode(login.toJson()));
-                                      AppPreferences.setString(
-                                          key1, jsonEncode(profile.toJson()));
+                                  AppPreferences.setString(
+                                      key2, jsonEncode(login.toJson()));
+                                  AppPreferences.setString(
+                                      key1, jsonEncode(profile.toJson()));
 
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              SplashScreen(),
-                                        ),
-                                      );
-                                    } else {
-                                      AwesomeDialog(
-                                        context: context,
-                                        animType: AnimType.SCALE,
-                                        dialogType: DialogType.ERROR,
-                                        title: 'This is Ignored',
-                                        desc: 'This is also Ignored',
-                                        body: Text(
-                                          response['message'] ?? '',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        dismissOnTouchOutside: false,
-                                        btnOkOnPress: () {
-                                          dialog.hide();
-                                        },
-                                      ).show();
-                                    }
-                                    print(value);
-                                  })
-                                });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          SplashScreen(),
+                                    ),
+                                  );
+                                } else {
+                                  AwesomeDialog(
+                                    context: context,
+                                    animType: AnimType.SCALE,
+                                    dialogType: DialogType.ERROR,
+                                    title: 'This is Ignored',
+                                    desc: 'This is also Ignored',
+                                    body: Text(
+                                      response['message'] ?? '',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    dismissOnTouchOutside: false,
+                                    btnOkOnPress: () {
+                                      dialog.hide();
+                                    },
+                                  ).show();
+                                }
+                                print(value);
+                              })
+                            });
                       }
                       //
                       else {

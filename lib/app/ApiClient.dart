@@ -37,6 +37,13 @@ class ApiClient extends AppConstants {
     return await getInstance().post('updatePartyMasterDB', data: params);
   }
 
+  Future<Response<Map>> uploadFile(String filePath) async {
+    FormData formData = FormData.fromMap({
+      'image': await MultipartFile.fromFile(filePath),
+    });
+    return await getInstance().post('uploadFile', data: formData);
+  }
+
   Future<Response<Map>> getPartyMasterProfile(int id) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
