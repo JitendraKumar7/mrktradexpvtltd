@@ -19,16 +19,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     ApiClient().checkPartyPermission().then((value) => {
           setState(() {
-            Map<String, dynamic> response = value.data;
+            Map response = value.data;
             if (response['status'] == 200) {
-              Map<String, dynamic> result = response['result'];
-              isLoginRequired = result['login_required'] == 1;
+              var loginRequired = response['result']['login_required'];
+              print('login required $loginRequired');
+              isLoginRequired = loginRequired == 1;
             }
+            onBackPressed();
           }),
           //{login_required: 1, gstin_required: 1}}
           print(value.data),
         });
-    onBackPressed();
   }
 
   onBackPressed() {
@@ -44,6 +45,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             }
           })
         });
+
+    print('Back Pressed ${cart.length}');
   }
 
   Widget getCart() {
@@ -95,21 +98,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: Text('नमस्कार / welcome'),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => isLoginRequired
-                        ? PartyMasterMobileScreen(logo: basicInfo.konnectLogo)
-                        : OrderCartScreen()),
-              );
-            },
-          ),
+          getCart(),
         ],
       ),
       body: Column(
@@ -191,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       PartyMasterMobileScreen(
                                           logo: basicInfo.konnectLogo)));
                         },
-                        text: "Login",
+                        text: 'Login',
                       ),
                     ),
                   ),
@@ -343,9 +332,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
           ),
+          GFButton(
+            size: 50,
+            fullWidthButton: true,
+            type: GFButtonType.solid,
+            color: Colors.blue.shade300,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => InAppWebViewPage(),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.video_call,
+              color: Colors.white,
+            ),
+            text: '',
+          ),
         ],
       ),
     );
   }
-
 }

@@ -26,6 +26,13 @@ class ApiClient extends AppConstants {
     return await getInstance().post('getPaymentButton', data: params);
   }
 
+  Future<Response<Map>> getVideoConferencing() async {
+    Map params = Map<String, dynamic>();
+    params['konnect_id'] = konnectId;
+    params['user_id'] = userId;
+    return await getInstance().post('getVideoConferencing', data: params);
+  }
+
   Future<Response<Map>> addPartyMaster(Map params) async {
     params['konnect_id'] = konnectId;
     params['add_from'] = 'KMB';

@@ -12,11 +12,12 @@ class ContactScreen extends StatelessWidget {
     final BasicInfo _basicInfo = konnectDetails.basicInfo;
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("Contact")),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Contact'),
+      ),
       body: ListView(children: <Widget>[
         CarouselSlider(images: _coverImage, info: _basicInfo),
         Padding(
@@ -49,7 +50,6 @@ class ContactScreen extends StatelessWidget {
         ),
         SizedBox(height: 24),
         Divider(thickness: 16),
-
       ]),
     );
   }

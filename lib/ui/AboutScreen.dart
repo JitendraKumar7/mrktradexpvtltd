@@ -13,11 +13,12 @@ class AboutScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("About")),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('About'),
+      ),
       body: ListView(
         children: <Widget>[
           CarouselSlider(images: _coverImage, info: _basicInfo),

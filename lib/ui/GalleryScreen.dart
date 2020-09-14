@@ -41,7 +41,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
             icon: Icon(Icons.arrow_back_ios, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text("Gallery")),
+          title: Text('Gallery'),),
       body: ListView(children: <Widget>[
         CarouselSlider(images: _coverImage, info: _basicInfo),
         _list == null

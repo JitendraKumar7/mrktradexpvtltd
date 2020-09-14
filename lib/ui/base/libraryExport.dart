@@ -34,6 +34,7 @@ export 'package:mrktradexpvtltd/ui/BankingScreen.dart';
 export 'package:mrktradexpvtltd/ui/ContactScreen.dart';
 export 'package:mrktradexpvtltd/ui/DashboardScreen.dart';
 export 'package:mrktradexpvtltd/ui/GalleryScreen.dart';
+export 'package:mrktradexpvtltd/ui/InAppWebViewPage.dart';
 export 'package:mrktradexpvtltd/ui/LocationScreen.dart';
 export 'package:mrktradexpvtltd/ui/AdminLogin.dart';
 export 'package:mrktradexpvtltd/ui/OffersScreen.dart';

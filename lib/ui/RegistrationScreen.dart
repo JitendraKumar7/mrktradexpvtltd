@@ -17,11 +17,12 @@ class RegisterScreen extends StatelessWidget {
     final List<Msme> _msme = konnectDetails.msme;
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("Registrations")),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Registrations'),
+      ),
       body: ListView(children: <Widget>[
         CarouselSlider(images: _coverImage, info: _basicInfo),
         GFAccordion(
@@ -34,34 +35,34 @@ class RegisterScreen extends StatelessWidget {
             contentPadding: EdgeInsets.only(top: 9, bottom: 9),
             contentChild: _gstin.isEmpty
                 ? Center(
-                child: Padding(
-                    padding: EdgeInsets.all(28.0),
-                    child: Text(
-                      'Empty',
-                      style: TextStyle(backgroundColor: Colors.white),
-                    )))
+                    child: Padding(
+                        padding: EdgeInsets.all(28.0),
+                        child: Text(
+                          'Empty',
+                          style: TextStyle(backgroundColor: Colors.white),
+                        )))
                 : Column(
-                children: _gstin.map((item) {
-                  return ListTile(
-                      title: Padding(
-                          padding: EdgeInsets.only(top: 6, bottom: 6),
-                          child: Text(
-                            item.gstin,
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          )),
-                      subtitle: Padding(
-                          padding: EdgeInsets.only(top: 6, bottom: 6),
-                          child: Text(
-                            item.state,
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold),
-                          )));
-                }).toList())),
+                    children: _gstin.map((item) {
+                    return ListTile(
+                        title: Padding(
+                            padding: EdgeInsets.only(top: 6, bottom: 6),
+                            child: Text(
+                              item.gstin,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                        subtitle: Padding(
+                            padding: EdgeInsets.only(top: 6, bottom: 6),
+                            child: Text(
+                              item.state,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold),
+                            )));
+                  }).toList())),
         GFAccordion(
             title: 'MSME Licence',
             textStyle: TextStyle(color: Colors.white, fontSize: 16),
@@ -72,34 +73,34 @@ class RegisterScreen extends StatelessWidget {
             contentPadding: EdgeInsets.only(top: 9, bottom: 9),
             contentChild: _msme.isEmpty
                 ? Center(
-                child: Padding(
-                    padding: EdgeInsets.all(28.0),
-                    child: Text(
-                      'Empty',
-                      style: TextStyle(backgroundColor: Colors.white),
-                    )))
+                    child: Padding(
+                        padding: EdgeInsets.all(28.0),
+                        child: Text(
+                          'Empty',
+                          style: TextStyle(backgroundColor: Colors.white),
+                        )))
                 : Column(
-                children: _msme.map((item) {
-                  return ListTile(
-                      title: Padding(
-                          padding: EdgeInsets.only(top: 6, bottom: 6),
-                          child: Text(
-                            item.enterpriseName,
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          )),
-                      subtitle: Padding(
-                          padding: EdgeInsets.all(6.0),
-                          child: Text(
-                            item.uanNumber,
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold),
-                          )));
-                }).toList())),
+                    children: _msme.map((item) {
+                    return ListTile(
+                        title: Padding(
+                            padding: EdgeInsets.only(top: 6, bottom: 6),
+                            child: Text(
+                              item.enterpriseName,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                        subtitle: Padding(
+                            padding: EdgeInsets.all(6.0),
+                            child: Text(
+                              item.uanNumber,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold),
+                            )));
+                  }).toList())),
         GFAccordion(
             title: 'Drug Licence',
             textStyle: TextStyle(color: Colors.white, fontSize: 16),

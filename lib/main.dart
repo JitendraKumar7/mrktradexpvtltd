@@ -1,6 +1,7 @@
 import 'ui/base/libraryExport.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
   runApp(MyApp());
 }

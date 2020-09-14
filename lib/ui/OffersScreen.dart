@@ -12,11 +12,12 @@ class OffersScreen extends StatelessWidget {
     final List<Offer> _offers = konnectDetails.offer;
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("Offers")),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Offers'),
+      ),
       body: ListView(
         children: <Widget>[
           CarouselSlider(images: _coverImage, info: _basicInfo),

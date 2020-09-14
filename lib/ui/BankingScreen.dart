@@ -12,11 +12,12 @@ class BankingScreen extends StatelessWidget {
     final List<Bank> _bank = konnectDetails.bank;
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("Banking Details")),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Banking Details'),
+      ),
       body: ListView(children: <Widget>[
         CarouselSlider(images: _coverImage, info: _basicInfo),
         Column(

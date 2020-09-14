@@ -13,11 +13,12 @@ class LocationScreen extends StatelessWidget {
     final BasicInfo _basicInfo = konnectDetails.basicInfo;
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("Location")),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Location'),
+      ),
       body: ListView(children: <Widget>[
         CarouselSlider(images: _coverImage, info: _basicInfo),
         Column(
