@@ -106,8 +106,8 @@ class _SalesOrderViewState extends State<SalesOrderViewScreen> {
                   padding: EdgeInsets.all(24),
                   child: dataTable == null
                       ? Container(
-                          width: MediaQuery.of(context).size.height,
                           height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
                           child: Center(
                             child: GFLoader(loaderColorOne: Colors.white),
                           ),
@@ -174,10 +174,12 @@ class _SalesOrderViewState extends State<SalesOrderViewScreen> {
                                       getRowDesign(
                                         '${result['firm_name']}',
                                         17,
-                                      ), getRowDesign(
+                                      ),
+                                      getRowDesign(
                                         'Address :- ${result['address']}',
                                         17,
-                                      ), getRowDesign(
+                                      ),
+                                      getRowDesign(
                                         'Date :- ${result['timestamp']}',
                                         17,
                                       ),

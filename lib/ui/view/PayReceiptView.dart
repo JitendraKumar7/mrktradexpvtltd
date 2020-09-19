@@ -252,8 +252,8 @@ class _PayReceiptViewState extends State<PayReceiptViewScreen> {
                           ),
                           dataTable == null
                               ? Container(
-                                  width: MediaQuery.of(context).size.height,
                                   height: MediaQuery.of(context).size.height,
+                                  width: MediaQuery.of(context).size.width,
                                   child: Center(
                                     child:
                                         GFLoader(loaderColorOne: Colors.white),

@@ -34,20 +34,6 @@ class _SplashScreenState extends State<SplashScreen> {
   final PushNotificationService _pushNotificationService =
       locator<PushNotificationService>();
 
-  @override
-  void initState() {
-    super.initState();
-    _pushNotificationService.register();
-    _pushNotificationService.initialise();
-
-    if (widget.splash) {
-      var duration = const Duration(milliseconds: 3000);
-      Future.delayed(duration, openDashboard);
-    } else {
-      openDashboard();
-    }
-  }
-
   openDashboard() {
     ApiClient().getCardDetails().then((value) {
       setState(() {
@@ -102,6 +88,20 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _pushNotificationService.register();
+    _pushNotificationService.initialise();
+
+    if (widget.splash) {
+      var duration = const Duration(milliseconds: 3000);
+      Future.delayed(duration, openDashboard);
+    } else {
+      openDashboard();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return widget.splash
         ? Container(
@@ -112,7 +112,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           )
         : Container(
-            width: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Center(
               child: GFLoader(loaderColorOne: Colors.white),

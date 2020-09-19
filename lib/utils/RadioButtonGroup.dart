@@ -11,7 +11,7 @@ class RadioButtonGroup extends StatefulWidget {
 
   /// Specifies which Radio button to automatically pick.
   /// Every element must match a label.
-  /// This is useful for clearing what is picked (set it to "").
+  /// This is useful for clearing what is picked (set it to '').
   /// If this is non-null, then the user must handle updating this; otherwise, the state of the RadioButtonGroup won't change.
   final Bank picked;
 

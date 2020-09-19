@@ -39,7 +39,7 @@ class _AdminSalesOrderState extends State<AdminSalesOrderScreen> {
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Sales Order"),
+        title: Text('Sales Order'),
       ),
       body: _list == null
           ? Container(
@@ -55,7 +55,7 @@ class _AdminSalesOrderState extends State<AdminSalesOrderScreen> {
                   height: MediaQuery.of(context).size.height,
                   child: Center(
                     child: Text(
-                      "Empty",
+                      'Empty',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

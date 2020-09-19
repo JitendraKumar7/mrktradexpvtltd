@@ -17,26 +17,76 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   }
 
   getVideoConferencing() async {
-    var microphone = await Permission.microphone.request();
-    var camera = await Permission.camera.request();
-    var granted = PermissionStatus.granted;
+    var result = await ApiClient().getVideoConferencing();
 
-    if (microphone == granted && camera == granted) {
-      ApiClient().getVideoConferencing().then((value) => {
-        setState(() {
-          print(value.data);
-          Map response = value.data;
-          if (response['status'] == '200') {
-            var url = response['result']['video_url'];
-            print('Video conference url $url');
-            _controller.loadUrl(url: url);
-          }
-          // error
-          else {
-            _loadHtmlFromAssets('try again!');
-          }
-        }),
-      });
+    print(result.data);
+    Map response = result.data;
+    if (response['status'] == '200') {
+      var microphone = await Permission.microphone.request();
+      var camera = await Permission.camera.request();
+      var granted = PermissionStatus.granted;
+      if (microphone == granted && camera == granted) {
+        final List<Map> _list = List();
+        response['result'].forEach((value) {
+          _list.add(value);
+        });
+        AwesomeDialog(
+          context: context,
+          body: Container(
+            width: 400,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 12),
+                  child: Text(
+                    'Select',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                  ),
+                ),
+                Divider(),
+                ListView(
+                  shrinkWrap: true,
+                  children: _list.map((item) {
+                    return ListTile(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        String url = item['video_url'];
+                        _controller.loadUrl(url: url);
+                        print('Video url $url');
+                      },
+                      title: Text(
+                        item['room_name'],
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
+          btnCancelOnPress: () {
+            Navigator.of(context).pop();
+          },
+          animType: AnimType.SCALE,
+          btnCancelColor: Colors.grey,
+          dismissOnTouchOutside: false,
+          dialogType: DialogType.NO_HEADER,
+        ).show();
+      }
+    }
+    // Service not available
+    else {
+      _loadHtmlFromAssets('try again!');
+      AwesomeDialog(
+        context: context,
+        btnCancelOnPress: () {
+          Navigator.of(context).pop();
+        },
+        animType: AnimType.SCALE,
+        dialogType: DialogType.INFO,
+        body: Text('You have not subscribed to this service'),
+      ).show();
     }
   }
 
@@ -77,17 +127,3 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
             .toString());
   }
 }
-/*
-https://kmb.daily.co/mrktradex
-
-https://meo.co.in/meoApiPro/kmb_v1/index.php/getVideoConferencing
-
-{
-    "status": "200",
-    "message": "success",
-    "result": {
-        "video_url": "https://kmb.daily.co/mrktradex"
-    }
-}
-
-*/

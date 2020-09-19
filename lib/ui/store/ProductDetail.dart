@@ -386,7 +386,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     AwesomeDialog(
       context: context,
       animType: AnimType.SCALE,
-      dialogType: DialogType.INFO,
+      dialogType: DialogType.NO_HEADER,
       body: Container(
         width: 400,
         child: GroupedCheckbox(
@@ -401,8 +401,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             checkColor: Colors.blue,
             activeColor: Colors.grey),
       ),
-      title: 'This is Ignored',
-      desc: 'This is also Ignored',
       btnCancelOnPress: () {},
       btnOkOnPress: () {
         print('button clicked btnOkOnPress');
@@ -410,21 +408,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               print('Params One ' + item.paramsOne),
               print('Params Two ' + item.paramsTwo),
               setState(() {
-                cart.add(CartSummery(
-                    _productDetails.id,
-                    _productDetails.unit,
-                    _productDetails.image,
-                    item.paramsTradePrice,
-                    _productDetails.gstRate,
-                    _productDetails.name,
-                    _productDetails.moq,
-                    _productDetails.stock,
-                    _productDetails.checkStock,
-                    item.paramsOne + ' ' + item.paramsTwo));
+                cart.add(
+                  CartSummery(
+                      _productDetails.id,
+                      _productDetails.unit,
+                      _productDetails.image,
+                      item.paramsTradePrice,
+                      _productDetails.gstRate,
+                      _productDetails.name,
+                      _productDetails.moq,
+                      _productDetails.stock,
+                      _productDetails.checkStock,
+                      item.paramsOne + ' ' + item.paramsTwo),
+                );
                 String key = AppConstants.USER_CART_DATA;
                 AppPreferences.setString(key, jsonEncode(cart));
                 print(jsonEncode(cart));
-                print("Item Added");
+                print('Item Added');
                 Navigator.of(context).pop(true);
               }),
             });

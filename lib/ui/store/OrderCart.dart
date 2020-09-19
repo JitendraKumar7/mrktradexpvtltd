@@ -14,20 +14,6 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
     initCart();
   }
 
-  void initCart() {
-    AppPreferences.getString(AppConstants.USER_CART_DATA).then((value) => {
-          if (value != null)
-            {
-              setState(() {
-                cartSummery = List<CartSummery>();
-                for (Map json in jsonDecode(value)) {
-                  cartSummery.add(CartSummery.fromJson(json));
-                }
-              })
-            }
-        });
-  }
-
   void goAllProduct() {
     Navigator.push(
       context,
@@ -37,6 +23,31 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
         ),
       ),
     ).then((value) => initCart());
+  }
+
+  void initCart() async {
+    String key = AppConstants.USER_CART_DATA;
+    String value = await AppPreferences.getString(key);
+
+    if (value != null) {
+      cartSummery = List<CartSummery>();
+      for (Map json in jsonDecode(value)) {
+        cartSummery.add(CartSummery.fromJson(json));
+      }
+    }
+
+    /* AppPreferences.getString(AppConstants.USER_CART_DATA).then((value) => {
+          if (value != null)
+            {
+              setState(() {
+                cartSummery = List<CartSummery>();
+                for (Map json in jsonDecode(value)) {
+                  cartSummery.add(CartSummery.fromJson(json));
+                }
+              })
+            }
+        });*/
+
   }
 
   @override
@@ -78,122 +89,137 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                     CartSummery item = cartSummery[index];
                     return Card(
                       elevation: 8.0,
-                      child: ListTile(
-                        leading: FadeInImage.assetNetwork(
+                      child: Row(children: <Widget>[
+                        FadeInImage.assetNetwork(
                           image: item.image,
                           placeholder: 'images/iv_empty.png',
-                          height: 80,
+                          height: 60,
                           width: 60,
                         ),
-                        title: Row(children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              item.product,
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.remove_shopping_cart,
-                                color: Colors.deepOrange),
-                            onPressed: () {
-                              AwesomeDialog(
-                                  title: 'Remove',
-                                  context: context,
-                                  dialogType: DialogType.ERROR,
-                                  animType: AnimType.BOTTOMSLIDE,
-                                  desc: 'Are you sure, you want to remove',
-                                  btnCancelOnPress: () {
-                                    print('Cancel On Pressed');
-                                  },
-                                  btnOkOnPress: () {
-                                    setState(() {
-                                      cartSummery.removeWhere((itemToCheck) =>
-                                          itemToCheck.id == item.id);
-                                      String key = AppConstants.USER_CART_DATA;
-                                      AppPreferences.setString(
-                                          key, jsonEncode(cartSummery));
-                                      print(jsonEncode(cartSummery));
-                                      print('Item Removed');
-                                    });
-                                  }).show();
-                            },
-                          ),
-                        ]),
-                        subtitle: Row(children: <Widget>[
-                          Text(
-                            '₹ ${cartSummery[index].amount}/-',
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(width: 20),
-                          IconButton(
-                            icon: Icon(Icons.remove_circle_outline),
-                            onPressed: () {
-                              String value = item.controller.text;
-                              if (int.parse(value) > 1) {
-                                item.controller.text =
-                                    (int.parse(value) - 1).toString();
-                              }
-                            },
-                          ),
-                          Expanded(
-                            child: TextField(
-                              maxLines: 1,
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.done,
-                              controller: item.controller,
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.add_circle_outline),
-                            onPressed: () {
-                              int value = int.tryParse(item.controller.text);
-                              int stock = int.tryParse(item.stock);
-                              value = value + 1;
-
-                              if (item.checkStock == '0') {
-                                item.controller.text = value.toString();
-                              }
-                              //
-                              else if (stock >= value) {
-                                item.controller.text = value.toString();
-                              }
-                              //
-                              else {
-                                AwesomeDialog(
-                                        title: 'Overflow',
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Row(children: <Widget>[
+                                Expanded(
+                                  child: Text(
+                                    item.product + ' - ' + item.extraParams,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.remove_shopping_cart,
+                                      color: Colors.deepOrange),
+                                  onPressed: () {
+                                    AwesomeDialog(
+                                        title: 'Remove',
                                         context: context,
-                                        desc: 'Only $stock items in stock',
-                                        headerAnimationLoop: false,
-                                        animType: AnimType.TOPSLIDE,
-                                        dialogType: DialogType.WARNING,
-                                        btnOkOnPress: () {})
-                                    .show();
-                              }
-                            },
+                                        dialogType: DialogType.ERROR,
+                                        animType: AnimType.BOTTOMSLIDE,
+                                        desc:
+                                            'Are you sure, you want to remove',
+                                        btnCancelOnPress: () {
+                                          print('Cancel On Pressed');
+                                        },
+                                        btnOkOnPress: () {
+                                          setState(() {
+                                            cartSummery.removeWhere(
+                                                (itemToCheck) =>
+                                                    itemToCheck.id == item.id);
+                                            String key =
+                                                AppConstants.USER_CART_DATA;
+                                            AppPreferences.setString(
+                                                key, jsonEncode(cartSummery));
+                                            print(jsonEncode(cartSummery));
+                                            print('Item Removed');
+                                          });
+                                        }).show();
+                                  },
+                                ),
+                              ]),
+                              Row(children: <Widget>[
+                                Text(
+                                  '₹ ${cartSummery[index].amount}/-',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: 20),
+                                IconButton(
+                                  icon: Icon(Icons.remove_circle_outline),
+                                  onPressed: () {
+                                    String value = item.controller.text;
+                                    if (int.parse(value) > 1) {
+                                      item.controller.text =
+                                          (int.parse(value) - 1).toString();
+                                    }
+                                  },
+                                ),
+                                Expanded(
+                                  child: TextField(
+                                    maxLines: 1,
+                                    keyboardType: TextInputType.number,
+                                    textInputAction: TextInputAction.done,
+                                    controller: item.controller,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.add_circle_outline),
+                                  onPressed: () {
+                                    int value =
+                                        int.tryParse(item.controller.text);
+                                    int stock = int.tryParse(item.stock) ?? 0;
+                                    value = value + 1;
+
+                                    if (item.checkStock == '0') {
+                                      item.controller.text = value.toString();
+                                    }
+                                    //
+                                    else if (stock >= value) {
+                                      item.controller.text = value.toString();
+                                    }
+                                    //
+                                    else {
+                                      AwesomeDialog(
+                                              title: 'Overflow',
+                                              context: context,
+                                              desc:
+                                                  'Only $stock items in stock',
+                                              headerAnimationLoop: false,
+                                              animType: AnimType.TOPSLIDE,
+                                              dialogType: DialogType.WARNING,
+                                              btnOkOnPress: () {})
+                                          .show();
+                                    }
+                                  },
+                                ),
+                              ]),
+                            ],
                           ),
-                        ]),
-                      ),
+                        ),
+                      ]),
                     );
                   },
                 ),
         ),
         MaterialButton(
           minWidth: MediaQuery.of(context).size.width,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(1)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(1),
+          ),
           height: 55,
           onPressed: () {
             if (cartSummery.length > 0) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        OrderSummeryScreen(summery: cartSummery)),
+                  builder: (BuildContext context) =>
+                      OrderSummeryScreen(summery: cartSummery),
+                ),
               );
             } else {
               AwesomeDialog(

@@ -75,16 +75,16 @@ class _AdminPurchaseInvoiceState extends State<AdminPurchaseInvoiceScreen>
       ),
       body: _list == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
               height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
                   height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',

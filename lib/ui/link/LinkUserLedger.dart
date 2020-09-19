@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserLedgerScreen extends StatefulWidget {
-  final  int id;
+  final int id;
 
   const LinkUserLedgerScreen({Key key, this.id}) : super(key: key);
 
@@ -18,7 +18,7 @@ class _LinkUserLedgerState extends State<LinkUserLedgerScreen>
   void initState() {
     super.initState();
     _tabController = new TabController(initialIndex: 0, length: 2, vsync: this);
-    ApiAdmin().getLinkUserLedger(widget.id,'ERP').then((value) => {
+    ApiAdmin().getLinkUserLedger(widget.id, 'ERP').then((value) => {
           setState(() {
             Map<String, dynamic> response = value.data;
 
@@ -54,7 +54,7 @@ class _LinkUserLedgerState extends State<LinkUserLedgerScreen>
             setState(() {
               _list = null;
               String value = index == 0 ? 'ERP' : 'KMB';
-              ApiAdmin().getLinkUserLedger(widget.id,value).then((value) => {
+              ApiAdmin().getLinkUserLedger(widget.id, value).then((value) => {
                     setState(() {
                       _list = List<Map>();
                       Map<String, dynamic> response = value.data;
@@ -73,16 +73,16 @@ class _LinkUserLedgerState extends State<LinkUserLedgerScreen>
       ),
       body: _list == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
               height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
                   height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',

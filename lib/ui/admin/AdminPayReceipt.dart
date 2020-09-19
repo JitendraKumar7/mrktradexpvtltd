@@ -71,16 +71,16 @@ class _AdminPayReceiptState extends State<AdminPayReceiptScreen>
       ),
       body: _list == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
-              height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
-                  height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',

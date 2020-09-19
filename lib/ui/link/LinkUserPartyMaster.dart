@@ -40,20 +40,20 @@ class _LinkUserPartyMasterState extends State<LinkUserPartyMasterScreen> {
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Party Master"),
+        title: Text('Party Master'),
       ),
       body: _list == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
-              height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
-                  height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',

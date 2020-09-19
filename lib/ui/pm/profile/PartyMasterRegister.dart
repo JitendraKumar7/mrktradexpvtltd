@@ -25,9 +25,9 @@ class _PartyMasterRegisterState extends State<PartyMasterRegisterScreen> {
     super.initState();
     ApiClient().checkPartyPermission().then((value) => {
           setState(() {
-            Map<String, dynamic> response = value.data;
+            Map response = value.data;
             if (response['status'] == 200) {
-              Map<String, dynamic> result = response['result'];
+              Map result = response['result'];
               isGstRequired = result['gstin_required'] == 1;
             }
           }),

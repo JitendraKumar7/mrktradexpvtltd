@@ -40,23 +40,23 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Sales Order"),
+        title: Text('Sales Order'),
       ),
       body: _list == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
-              height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
-                  height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
-                      "Empty",
+                      'Empty',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

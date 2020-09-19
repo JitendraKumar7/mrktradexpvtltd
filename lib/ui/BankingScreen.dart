@@ -73,13 +73,13 @@ class BankingScreen extends StatelessWidget {
   }
 
   String createUPI(String name, String address) {
-    String upi = "upi://pay?pn=" +
+    String upi = 'upi://pay?pn=' +
         name +
-        "&pa=" +
+        '&pa=' +
         address +
-        "&cu=INR" +
-        "&tn=KMB" +
-        "&url=http://konnectmybusiness.com";
-    return upi.replaceAll(" ", "+");
+        '&cu=INR' +
+        '&tn=KMB' +
+        '&url=http://konnectmybusiness.com';
+    return upi.replaceAll(' ', '+');
   }
 }

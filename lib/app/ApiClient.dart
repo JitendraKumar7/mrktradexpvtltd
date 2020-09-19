@@ -109,7 +109,7 @@ class ApiClient extends AppConstants {
   }
 
   Future<Response<Map>> getItemById(int itemId) async {
-    return await getInstance().post('getWebstoreL5ById', data: {"id": itemId});
+    return await getInstance().post('getWebstoreL5ById', data: {'id': itemId});
   }
 
   Future<Response<Map>> getWebstoreL2(int categoryId) async {

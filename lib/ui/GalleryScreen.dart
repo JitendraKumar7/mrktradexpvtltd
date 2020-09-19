@@ -110,7 +110,7 @@ class ImageSliderViewScreen extends StatelessWidget {
             icon: Icon(Icons.arrow_back_ios, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text("Slider View")),
+          title: Text('Slider View')),
       body: GFCarousel(
           initialPage: position,
           height: MediaQuery.of(context).size.height,

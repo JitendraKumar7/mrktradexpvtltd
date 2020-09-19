@@ -321,8 +321,8 @@ class _CategoryState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -501,16 +501,16 @@ class _SubCategoryL2State extends State<SubCategoryL2Screen> {
         padding: EdgeInsets.all(12.0),
         child: _list == null
             ? Container(
-                width: MediaQuery.of(context).size.height,
                 height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
                 child: Center(
                   child: GFLoader(loaderColorOne: Colors.white),
                 ),
               )
             : _list.isEmpty
                 ? Container(
-                    width: MediaQuery.of(context).size.height,
                     height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
                     child: Center(
                       child: Text(
                         'Empty',
@@ -694,16 +694,16 @@ class _SubCategoryL3State extends State<SubCategoryL3Screen> {
         padding: EdgeInsets.all(12.0),
         child: _list == null
             ? Container(
-                width: MediaQuery.of(context).size.height,
                 height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
                 child: Center(
                   child: GFLoader(loaderColorOne: Colors.white),
                 ),
               )
             : _list.isEmpty
                 ? Container(
-                    width: MediaQuery.of(context).size.height,
                     height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
                     child: Center(
                       child: Text(
                         'Empty',
@@ -882,16 +882,16 @@ class _SubCategoryL4State extends State<SubCategoryL4Screen> {
         padding: EdgeInsets.all(12.0),
         child: _list == null
             ? Container(
-                width: MediaQuery.of(context).size.height,
-                height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
                 child: Center(
                   child: GFLoader(loaderColorOne: Colors.white),
                 ),
               )
             : _list.isEmpty
                 ? Container(
-                    width: MediaQuery.of(context).size.height,
-                    height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
                     child: Center(
                       child: Text(
                         'Empty',
@@ -1000,7 +1000,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen>
               icon: Icon(Icons.arrow_back_ios, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text("Products"),
+            title: Text('Products'),
             actions: <Widget>[
               IconButton(
                 icon: Icon(
@@ -1050,7 +1050,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen>
               : products.isEmpty
                   ? Center(
                       child: Text(
-                        "Empty",
+                        'Empty',
                         style: TextStyle(fontSize: 48, color: Colors.black87),
                       ),
                     )
@@ -1080,9 +1080,9 @@ class _SubCategoryScreenState extends State<SubCategoryScreen>
                                     fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
-                                "₹ " +
+                                '₹ ' +
                                     products[index].tradePrice +
-                                    "/- 1 " +
+                                    '/- 1 ' +
                                     products[index].productUnit.toUpperCase(),
                                 style: TextStyle(
                                     fontSize: 15,

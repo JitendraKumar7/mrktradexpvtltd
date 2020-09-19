@@ -40,23 +40,23 @@ class _PartyLedgerState extends State<PartyLedgerScreen> {
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Ledger"),
+        title: Text('Ledger'),
       ),
       body: _ledger == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
-              height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _ledger.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
-                  height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
-                      "Empty",
+                      'Empty',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

@@ -21,9 +21,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           setState(() {
             Map response = value.data;
             if (response['status'] == 200) {
-              var loginRequired = response['result']['login_required'];
-              print('login required $loginRequired');
-              isLoginRequired = loginRequired == 1;
+              Map result = response['result'];
+              isLoginRequired = result['login_required'] == 1;
             }
             onBackPressed();
           }),
@@ -338,12 +337,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             type: GFButtonType.solid,
             color: Colors.blue.shade300,
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => InAppWebViewPage(),
-                ),
-              );
+              AwesomeDialog(
+                context: context,
+                dialogType: DialogType.INFO,
+                animType: AnimType.RIGHSLIDE,
+                headerAnimationLoop: false,
+                title: 'Required',
+                desc: 'Required',
+                body: Text('Please login to use this service'),
+                btnCancelOnPress: () {},
+              ).show();
             },
             icon: Icon(
               Icons.video_call,
