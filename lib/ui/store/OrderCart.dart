@@ -26,7 +26,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
   }
 
   void initCart() async {
-    String key = AppConstants.USER_CART_DATA;
+  /*  String key = AppConstants.USER_CART_DATA;
     String value = await AppPreferences.getString(key);
 
     if (value != null) {
@@ -34,9 +34,9 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
       for (Map json in jsonDecode(value)) {
         cartSummery.add(CartSummery.fromJson(json));
       }
-    }
+    }*/
 
-    /* AppPreferences.getString(AppConstants.USER_CART_DATA).then((value) => {
+     AppPreferences.getString(AppConstants.USER_CART_DATA).then((value) => {
           if (value != null)
             {
               setState(() {
@@ -46,7 +46,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                 }
               })
             }
-        });*/
+        });
 
   }
 
