@@ -17,9 +17,13 @@ class _WebViewFlutterState extends State<WebViewFlutter> {
   _loadHtmlFromAssets(String paymentCode) async {
     String fileText =
         '<form><script src="https://cdn.razorpay.com/static/widget/payment-button.js" data-payment_button_id="pl_FQBhTsmRHDJkZv"> </script> </form>';
-    _controller.loadUrl(Uri.dataFromString(paymentCode,
-            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-        .toString());
+    _controller.loadUrl(
+      Uri.dataFromString(
+        paymentCode,
+        mimeType: 'text/html',
+        encoding: Encoding.getByName('utf-8'),
+      ).toString(),
+    );
   }
 
   @override

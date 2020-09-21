@@ -101,22 +101,24 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
         title: Text('Video Conferencing'),
       ),
       body: InAppWebView(
-          initialUrl: 'about:blank',
-          initialOptions: InAppWebViewGroupOptions(
-            crossPlatform: InAppWebViewOptions(
-              mediaPlaybackRequiresUserGesture: false,
-              debuggingEnabled: true,
-            ),
+        initialUrl: 'about:blank',
+        initialOptions: InAppWebViewGroupOptions(
+          crossPlatform: InAppWebViewOptions(
+            mediaPlaybackRequiresUserGesture: false,
+            debuggingEnabled: true,
           ),
-          onWebViewCreated: (InAppWebViewController controller) {
-            _controller = controller;
-          },
-          androidOnPermissionRequest: (InAppWebViewController controller,
-              String origin, List<String> resources) async {
-            return PermissionRequestResponse(
-                resources: resources,
-                action: PermissionRequestResponseAction.GRANT);
-          }),
+        ),
+        onWebViewCreated: (InAppWebViewController controller) {
+          _controller = controller;
+        },
+        androidOnPermissionRequest: (InAppWebViewController controller,
+            String origin, List<String> resources) async {
+          return PermissionRequestResponse(
+            resources: resources,
+            action: PermissionRequestResponseAction.GRANT,
+          );
+        },
+      ),
     );
   }
 

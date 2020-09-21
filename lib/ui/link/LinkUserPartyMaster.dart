@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserPartyMasterScreen extends StatefulWidget {
-  final  int id;
+  final int id;
 
   const LinkUserPartyMasterScreen({Key key, this.id}) : super(key: key);
 
@@ -44,16 +44,16 @@ class _LinkUserPartyMasterState extends State<LinkUserPartyMasterScreen> {
       ),
       body: _list == null
           ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',
@@ -70,18 +70,19 @@ class _LinkUserPartyMasterState extends State<LinkUserPartyMasterScreen> {
                     children: <Widget>[
                       ListTile(
                         onTap: () {
+                          int id = int.tryParse(item['id']);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  PartyMasterViewScreen(id: item['master_id']),
+                                  PartyMasterViewScreen(id: id),
                             ),
                           );
                         },
                         title: Padding(
                           padding: EdgeInsets.all(10),
                           child: Text(
-                            item['Name'] ?? 'Name Error',
+                            item['party_master_name'] ?? 'Name Error',
                           ),
                         ),
                       ),

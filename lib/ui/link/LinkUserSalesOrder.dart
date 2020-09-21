@@ -18,7 +18,7 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
 
     ApiAdmin().getLinkUserSalesOrder(widget.id).then((value) => {
           setState(() {
-            Map<String, dynamic> response = value.data;
+            Map response = value.data;
 
             _list = List<Map>();
             if (response['status'] == '200') {
@@ -44,16 +44,16 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
       ),
       body: _list == null
           ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',
@@ -84,7 +84,7 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
                         title: Row(
                           children: <Widget>[
                             Expanded(
-                              child: Text('#$id'),
+                              child: Text(item['firm_name']),
                             ),
                             Text(item['status'].toString().toUpperCase())
                           ],
