@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserSalesOrderScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   const LinkUserSalesOrderScreen({Key key, this.id}) : super(key: key);
 
@@ -65,38 +65,39 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
                   ),
                 )
               : ListView(
+                  reverse: true,
                   children: _list.map((item) {
-                  int id = item['booking_id'];
-                  return Column(
-                    children: <Widget>[
-                      ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  SalesOrderViewScreen(
-                                id: id.toString(),
+                    int id = item['booking_id'];
+                    return Column(
+                      children: <Widget>[
+                        ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SalesOrderViewScreen(
+                                  id: id.toString(),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        title: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(item['firm_name']),
-                            ),
-                            Text(item['status'].toString().toUpperCase())
-                          ],
+                            );
+                          },
+                          title: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(item['firm_name']),
+                              ),
+                              Text(item['status'].toString().toUpperCase())
+                            ],
+                          ),
+                          subtitle: Text(
+                            item['timestamp'],
+                          ),
                         ),
-                        subtitle: Text(
-                          item['timestamp'],
-                        ),
-                      ),
-                      Divider(),
-                    ],
-                  );
-                }).toList()),
+                        Divider(),
+                      ],
+                    );
+                  }).toList()),
     );
   }
 }

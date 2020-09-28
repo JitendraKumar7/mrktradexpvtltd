@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserLedgerScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   const LinkUserLedgerScreen({Key key, this.id}) : super(key: key);
 

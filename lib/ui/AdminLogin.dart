@@ -218,7 +218,6 @@ class _AdminLoginState extends State<AdminLoginScreen> {
 
   saveCredential(Map response, Map values) {
     if (response['status'] == '200') {
-
       print('User Login ${response['result']}');
       Map<String, dynamic> result = response['result'];
 
@@ -229,14 +228,13 @@ class _AdminLoginState extends State<AdminLoginScreen> {
 
       print(values);
 
-      UserLogin login = UserLogin(modal.type, true);
-      UserAdmin profile = UserAdmin.fromJson(values);
-
       String key1 = AppConstants.USER_LOGIN_DATA;
-      String key2 = AppConstants.USER_LOGIN_CREDENTIAL;
-
-      AppPreferences.setString(key2, jsonEncode(login.toJson()));
+      UserAdmin profile = UserAdmin.fromJson(values);
       AppPreferences.setString(key1, jsonEncode(profile.toJson()));
+
+      String key2 = AppConstants.USER_LOGIN_CREDENTIAL;
+      UserLogin login = UserLogin(modal.type, profile.contact);
+      AppPreferences.setString(key2, jsonEncode(login.toJson()));
 
       Navigator.push(
         context,

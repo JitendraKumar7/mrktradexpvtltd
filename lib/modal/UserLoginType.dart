@@ -10,9 +10,12 @@ enum UserType {
 
 class UserLogin {
   UserType _userType = UserType.OFF;
+  String _loginId = '123456789';
   bool _isLogin = false;
 
   bool get isLogin => _isLogin;
+
+  String get loginId => _loginId;
 
   UserType get userType => _userType;
 
@@ -24,20 +27,24 @@ class UserLogin {
 
   bool get isLinked => userType == UserType.LINKED;
 
-  UserLogin(this._userType, this._isLogin);
+  UserLogin(UserType _userType, String _loginId)
+      : _userType = _userType,
+        _loginId = _loginId,
+        _isLogin = true;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map();
     data['userType'] = userType.toString();
     data['isLogin'] = isLogin;
+    data['loginId'] = loginId;
     return data;
   }
 
-  UserType getUserType(String statusAsString) {
+  UserType getUserType(String status) {
     for (UserType element in UserType.values) {
       print('UserAsString ' + element.toString());
-      print('UserAsString ' + statusAsString);
-      if (element.toString() == statusAsString) {
+      print('UserAsString ' + status);
+      if (element.toString() == status) {
         return element;
       }
     }
@@ -49,6 +56,7 @@ class UserLogin {
       Map<String, dynamic> json = jsonDecode(credential);
       if (json['userType'] != null) _userType = getUserType(json['userType']);
       if (json['isLogin'] != null) _isLogin = json['isLogin'];
+      if (json['loginId'] != null) _loginId = json['loginId'];
     } else {
       _userType = UserType.OFF;
       _isLogin = false;

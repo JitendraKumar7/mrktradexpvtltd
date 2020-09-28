@@ -163,8 +163,8 @@ class _PartyMasterLoginState extends State<PartyMasterLoginScreen> {
                                     UserProfile profile = UserProfile.fromJson(
                                         response['result']);
 
-                                    UserLogin login =
-                                        UserLogin(UserType.MASTER, true);
+                                    UserLogin login = UserLogin(
+                                        UserType.MASTER, profile.phone);
 
                                     String key1 = AppConstants.USER_LOGIN_DATA;
                                     String key2 =

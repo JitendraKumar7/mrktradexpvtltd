@@ -91,7 +91,7 @@ class ApiAdmin extends AppConstants {
     return await getInstance().post('getPurchaseInvoiceById', data: {'id': id});
   }
 
-  Future<Response<Map>> getLinkUserLedger(int id, String from) async {
+  Future<Response<Map>> getLinkUserLedger(var id, String from) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;
@@ -100,7 +100,7 @@ class ApiAdmin extends AppConstants {
     return await getInstance().post('getLinkUserSalesOrder', data: params);
   }
 
-  Future<Response<Map>> getLinkUserPayReceipt(int id) async {
+  Future<Response<Map>> getLinkUserPayReceipt(var id) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;
@@ -108,7 +108,7 @@ class ApiAdmin extends AppConstants {
     return await getInstance().post('getLinkUserPayReceipt', data: params);
   }
 
-  Future<Response<Map>> getLinkUserSalesOrder(int id) async {
+  Future<Response<Map>> getLinkUserSalesOrder(var id) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;
@@ -116,7 +116,7 @@ class ApiAdmin extends AppConstants {
     return await getInstance().post('getLinkUserSalesOrder', data: params);
   }
 
-  Future<Response<Map>> getLinkUserPartyMaster(int id) async {
+  Future<Response<Map>> getLinkUserPartyMaster(var id) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;
@@ -124,7 +124,7 @@ class ApiAdmin extends AppConstants {
     return await getInstance().post('getLinkUserPartyMaster', data: params);
   }
 
-  Future<Response<Map>> getLinkUserSalesInvoice(int id, String from) async {
+  Future<Response<Map>> getLinkUserSalesInvoice(var id, String from) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;
@@ -133,7 +133,7 @@ class ApiAdmin extends AppConstants {
     return await getInstance().post('getLinkUserSalesInvoice', data: params);
   }
 
-  Future<Response<Map>> getLinkUserProformaInvoice(int id) async {
+  Future<Response<Map>> getLinkUserProformaInvoice(var id) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;

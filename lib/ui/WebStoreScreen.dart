@@ -333,6 +333,14 @@ class _CategoryState extends State<CategoryScreen> {
         title: Text('Store'),
         actions: <Widget>[
           getCart(),
+          IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Share.share(AppConstants.SHARE_STORE);
+              }),
         ],
       ),
       body: _category == null
@@ -882,16 +890,16 @@ class _SubCategoryL4State extends State<SubCategoryL4Screen> {
         padding: EdgeInsets.all(12.0),
         child: _list == null
             ? Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
                 child: Center(
                   child: GFLoader(loaderColorOne: Colors.white),
                 ),
               )
             : _list.isEmpty
                 ? Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
                     child: Center(
                       child: Text(
                         'Empty',

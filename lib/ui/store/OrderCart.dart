@@ -160,11 +160,11 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                                   },
                                 ),
                                 Expanded(
-                                  child: TextField(
+                                  child: TextFormField(
                                     maxLines: 1,
+                                    controller: item.controller,
                                     keyboardType: TextInputType.number,
                                     textInputAction: TextInputAction.done,
-                                    controller: item.controller,
                                   ),
                                 ),
                                 IconButton(

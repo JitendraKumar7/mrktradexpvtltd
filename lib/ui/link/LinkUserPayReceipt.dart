@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserPayReceiptScreen extends StatefulWidget {
-  final  int id;
+  final id;
 
   const LinkUserPayReceiptScreen({Key key, this.id}) : super(key: key);
 
@@ -71,16 +71,16 @@ class _LinkUserPayReceiptState extends State<LinkUserPayReceiptScreen>
       ),
       body: _list == null
           ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',

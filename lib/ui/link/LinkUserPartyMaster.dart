@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserPartyMasterScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   const LinkUserPartyMasterScreen({Key key, this.id}) : super(key: key);
 
@@ -70,12 +70,11 @@ class _LinkUserPartyMasterState extends State<LinkUserPartyMasterScreen> {
                     children: <Widget>[
                       ListTile(
                         onTap: () {
-                          int id = int.tryParse(item['id']);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  PartyMasterViewScreen(id: id),
+                                  PartyMasterViewScreen(id: item['id']),
                             ),
                           );
                         },

@@ -41,9 +41,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSCameraUsageDescription</key>
-    <string>Can I use the camera please?</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Upload images for screen background</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Upload image from camera for screen background</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Can I use the mic please?</string>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
 </dict>
 </plist>

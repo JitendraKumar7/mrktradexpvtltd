@@ -96,7 +96,11 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
   }
 
   Widget getProfile() {
-    return profile.image.isEmpty
+    bool isEmpty = profile == null
+        ? true
+        : profile.image == null ? true : profile.image.isEmpty;
+
+    return isEmpty
         ? Icon(
             Icons.perm_identity,
             size: 48,
@@ -110,11 +114,23 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
   }
 
   String getProfileName() {
-    return profile.name ?? widget.konnectDetails.basicInfo.organisation;
+    bool isEmpty = profile == null
+        ? true
+        : profile.name == null ? true : profile.name.isEmpty;
+
+    return isEmpty
+        ? widget.konnectDetails.basicInfo.organisation
+        : profile.name;
   }
 
   String getProfileContact() {
-    return profile.phone ?? widget.konnectDetails.basicInfo.categoryOfBusiness;
+    bool isEmpty = profile == null
+        ? true
+        : profile.phone == null ? true : profile.phone.isEmpty;
+
+    return isEmpty
+        ? widget.konnectDetails.basicInfo.categoryOfBusiness
+        : profile.phone;
   }
 
   @override
@@ -126,6 +142,14 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
         title: Text('नमस्कार / welcome'),
         actions: <Widget>[
           getCart(),
+          IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Share.share(AppConstants.SHARE_APP);
+              }),
         ],
       ),
       drawer: Drawer(
@@ -140,7 +164,7 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(30),
                       child: getProfile(),
                     ),
                     Padding(
@@ -156,7 +180,7 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
             ListTile(
               leading: Icon(Icons.person),
               title: Text('My Profile'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -171,7 +195,7 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
             ListTile(
               leading: Icon(Icons.add_shopping_cart),
               title: Text('My Orders'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -187,7 +211,7 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
             ListTile(
               leading: Icon(Icons.chat),
               title: Text('My Payment'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -204,7 +228,7 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
             ListTile(
               leading: Icon(Icons.account_balance),
               title: Text('My Ledger'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -220,7 +244,7 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
             ListTile(
               leading: Icon(Icons.credit_card),
               title: Text('My Invoice'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -236,7 +260,7 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
             ListTile(
               leading: Icon(Icons.account_balance_wallet),
               title: Text('Pay via QR'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -253,25 +277,9 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Logout (PM)'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                AwesomeDialog(
-                    context: context,
-                    dialogType: DialogType.INFO,
-                    animType: AnimType.BOTTOMSLIDE,
-                    title: 'Logout',
-                    desc: 'Are you sure want to logout',
-                    body: Text(
-                      'Are you sure want to logout',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    btnCancelOnPress: () {},
-                    btnCancelText: 'Cancel',
-                    btnOkText: 'Logout',
-                    btnOkOnPress: () {
-                      logout();
-                    }).show();
+                Logout(context).awesomeDialog(widget.konnectDetails);
               },
             ),
             Divider(),

@@ -83,7 +83,7 @@ class _AdminSalesOrderState extends State<AdminSalesOrderScreen> {
                         title: Row(
                           children: <Widget>[
                             Expanded(
-                              child: Text('#$id'),
+                              child: Text(item['firm_name']),
                             ),
                             Text(item['status'].toString().toUpperCase())
                           ],

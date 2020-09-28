@@ -80,6 +80,7 @@ class BankingScreen extends StatelessWidget {
         '&cu=INR' +
         '&tn=KMB' +
         '&url=http://konnectmybusiness.com';
+    //upi://pay?pa=192201502690@ICIC1000922.ifsc.npci&pn=JITENDRA%20KUMAR&mc=0000&tn=Pay%20to%20JITENDRA%20KUMAR&cu=INR
     return upi.replaceAll(' ', '+');
   }
 }

@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class PartyLedgerScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   const PartyLedgerScreen({Key key, this.id}) : super(key: key);
 

@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class PartyInvoiceScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   const PartyInvoiceScreen({Key key, this.id})
       : super(key: key);

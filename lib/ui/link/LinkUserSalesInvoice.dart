@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserSalesInvoiceScreen extends StatefulWidget {
-  final  int id;
+  final id;
 
   const LinkUserSalesInvoiceScreen({Key key, this.id}) : super(key: key);
 
@@ -19,21 +19,19 @@ class _LinkUserSalesInvoiceState extends State<LinkUserSalesInvoiceScreen>
     super.initState();
     _tabController = new TabController(initialIndex: 0, length: 2, vsync: this);
 
-    ApiAdmin()
-        .getLinkUserSalesInvoice(widget.id, 'ERP')
-        .then((value) => {
-              setState(() {
-                Map<String, dynamic> response = value.data;
+    ApiAdmin().getLinkUserSalesInvoice(widget.id, 'ERP').then((value) => {
+          setState(() {
+            Map<String, dynamic> response = value.data;
 
-                _list = List<Map>();
-                if (response['status'] == '200') {
-                  response['result'].forEach((value) {
-                    _list.add(value);
-                  });
-                }
-                print(response);
-              }),
-            });
+            _list = List<Map>();
+            if (response['status'] == '200') {
+              response['result'].forEach((value) {
+                _list.add(value);
+              });
+            }
+            print(response);
+          }),
+        });
   }
 
   @override
@@ -78,16 +76,16 @@ class _LinkUserSalesInvoiceState extends State<LinkUserSalesInvoiceScreen>
       ),
       body: _list == null
           ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',

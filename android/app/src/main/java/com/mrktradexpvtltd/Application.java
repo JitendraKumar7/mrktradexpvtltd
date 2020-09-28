@@ -1,5 +1,7 @@
 package com.mrktradexpvtltd;
 
+import com.google.firebase.FirebaseApp;
+
 import io.flutter.app.FlutterApplication;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback;
@@ -16,6 +18,7 @@ public class Application extends FlutterApplication implements PluginRegistrantC
     @Override
     public void onCreate() {
         super.onCreate();
+        FirebaseApp.initializeApp(this);
         FlutterFirebaseMessagingService.setPluginRegistrant(this);
     }
 

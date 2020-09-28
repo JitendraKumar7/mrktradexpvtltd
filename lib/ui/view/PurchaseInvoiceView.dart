@@ -77,8 +77,7 @@ class _PurchaseInvoiceViewState extends State<PurchaseInvoiceViewScreen> {
                 //getDataCell12(''),
                 getDataCell12('Total Amount'),
                 getDataCell12(''),
-                getDataCell12(
-                    '₹ ${result['total_amount']}'),
+                getDataCell12('₹ ${result['total_amount']}'),
               ]));
               for (var i = 0; i < 3; i++) {
                 rows.add(DataRow(cells: [

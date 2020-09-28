@@ -26,7 +26,7 @@ class _PartyMasterRegisterState extends State<PartyMasterRegisterScreen> {
     ApiClient().checkPartyPermission().then((value) => {
           setState(() {
             Map response = value.data;
-            if (response['status'] == 200) {
+            if (response['status'] == '200') {
               Map result = response['result'];
               isGstRequired = result['gstin_required'] == 1;
             }
@@ -243,7 +243,7 @@ class _PartyMasterRegisterState extends State<PartyMasterRegisterScreen> {
                                       UserProfile.fromJson(response['result']);
 
                                   UserLogin login =
-                                      UserLogin(UserType.MASTER, true);
+                                      UserLogin(UserType.MASTER, profile.phone);
 
                                   String key1 = AppConstants.USER_LOGIN_DATA;
                                   String key2 =

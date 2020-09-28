@@ -37,11 +37,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text('Gallery'),),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Gallery'),
+      ),
       body: ListView(children: <Widget>[
         CarouselSlider(images: _coverImage, info: _basicInfo),
         _list == null
@@ -65,6 +66,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     mainAxisSpacing: 4.0,
                     crossAxisSpacing: 4.0,
                     itemCount: _images.length,
+                    physics: NeverScrollableScrollPhysics(),
                     staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
                     itemBuilder: (BuildContext context, int index) => InkWell(
                       onTap: () {
@@ -112,21 +114,23 @@ class ImageSliderViewScreen extends StatelessWidget {
           ),
           title: Text('Slider View')),
       body: GFCarousel(
-          initialPage: position,
-          height: MediaQuery.of(context).size.height,
-          items: images.map(
-            (imagePath) {
-              return PinchZoomImage(
-                image: FadeInImage.assetNetwork(
-                  image: imagePath,
-                  placeholder: 'images/iv_empty.png',
-                ),
-              );
-            },
-          ).toList(),
-          autoPlay: true,
-          pagination: true,
-          viewportFraction: 1.0),
+        initialPage: position,
+        height: MediaQuery.of(context).size.height,
+        items: images.map(
+          (imagePath) {
+            return PinchZoomImage(
+              image: FadeInImage.assetNetwork(
+                image: imagePath,
+                placeholder: 'images/iv_empty.png',
+              ),
+            );
+          },
+        ).toList(),
+        autoPlay: true,
+        pagination: true,
+        viewportFraction: 1.0,
+        pauseAutoPlayOnTouch: Duration(seconds: 2),
+      ),
     );
   }
 }

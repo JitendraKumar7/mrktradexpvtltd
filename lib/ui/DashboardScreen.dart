@@ -17,21 +17,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
 
-    ApiClient().checkPartyPermission().then((value) => {
-          setState(() {
-            Map response = value.data;
-            if (response['status'] == 200) {
-              Map result = response['result'];
-              isLoginRequired = result['login_required'] == 1;
-            }
-            onBackPressed();
-          }),
-          //{login_required: 1, gstin_required: 1}}
-          print(value.data),
-        });
+    checkPermission();
   }
 
-  onBackPressed() {
+  onBackPressed() async {
     print('Back Pressed');
     String key = AppConstants.USER_CART_DATA;
     AppPreferences.getString(key).then((value) => {
@@ -48,7 +37,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     print('Back Pressed ${cart.length}');
   }
 
-  Widget getCart() {
+  checkPermission() async {
+    Map response = (await ApiClient().checkPartyPermission()).data;
+    if (response['status'] == '200') {
+      setState(() {
+        Map result = response['result'];
+        //{login_required: 1, gstin_required: 1}}
+        isLoginRequired = result['login_required'] == 1;
+        print('is Login Required result $isLoginRequired');
+      });
+    }
+    onBackPressed();
+    print(response);
+  }
+
+  Widget getCart(BasicInfo basicInfo) {
     return cart.isEmpty
         ? IconButton(
             icon: Icon(
@@ -59,7 +62,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => OrderCartScreen(),
+                  builder: (BuildContext context) => isLoginRequired
+                      ? PartyMasterMobileScreen(logo: basicInfo.konnectLogo)
+                      : OrderCartScreen(),
                 ),
               ).then(
                 (value) => onBackPressed(),
@@ -74,7 +79,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => OrderCartScreen(),
+                    builder: (BuildContext context) => isLoginRequired
+                        ? PartyMasterMobileScreen(logo: basicInfo.konnectLogo)
+                        : OrderCartScreen(),
                   ),
                 ).then(
                   (value) => onBackPressed(),
@@ -97,7 +104,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: Text('नमस्कार / welcome'),
         actions: <Widget>[
-          getCart(),
+          getCart(basicInfo),
+          IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Share.share(AppConstants.SHARE_APP);
+              }),
         ],
       ),
       body: Column(
@@ -173,11 +188,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         type: GFButtonType.outline,
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      PartyMasterMobileScreen(
-                                          logo: basicInfo.konnectLogo)));
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  PartyMasterMobileScreen(
+                                      logo: basicInfo.konnectLogo),
+                            ),
+                          );
                         },
                         text: 'Login',
                       ),
@@ -213,8 +230,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  LocationScreen(widget.konnectDetails)),
+                            builder: (BuildContext context) =>
+                                LocationScreen(widget.konnectDetails),
+                          ),
                         );
                       },
                       asset: 'images/home/ic_address.png',

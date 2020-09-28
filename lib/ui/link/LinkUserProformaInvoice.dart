@@ -1,10 +1,9 @@
 import '../base/libraryExport.dart';
 
 class LinkUserProformaInvoiceScreen extends StatefulWidget {
-  final  int id;
+  final id;
 
-  const LinkUserProformaInvoiceScreen({Key key, this.id})
-      : super(key: key);
+  const LinkUserProformaInvoiceScreen({Key key, this.id}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _LinkUserProformaInvoiceState();
@@ -46,16 +45,16 @@ class _LinkUserProformaInvoiceState
       ),
       body: _list == null
           ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',

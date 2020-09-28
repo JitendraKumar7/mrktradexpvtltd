@@ -10,7 +10,6 @@ class ProductSearchScreen extends StatefulWidget {
 }
 
 class _ProductSearchState extends State<ProductSearchScreen> {
-  TextEditingController _textController = TextEditingController();
   List<ProductDetails> mainDataList = List<ProductDetails>();
   List<CartSummery> cart = List<CartSummery>();
   List<ProductDetails> products;
@@ -53,42 +52,54 @@ class _ProductSearchState extends State<ProductSearchScreen> {
   Widget getCart() {
     return cart.isEmpty
         ? IconButton(
-        icon: Icon(
-          Icons.shopping_cart,
-          color: Colors.white,
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => OrderCartScreen(),
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
             ),
-          ).then(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => OrderCartScreen(),
+                ),
+              ).then(
                 (value) => onBackPressed(),
-          );
-        })
+              );
+            })
         : GFIconBadge(
-      child: GFIconButton(
-        size: GFSize.LARGE,
-        color: Colors.transparent,
-        icon: Icon(Icons.shopping_cart, color: Colors.white),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => OrderCartScreen(),
+            child: GFIconButton(
+              size: GFSize.LARGE,
+              color: Colors.transparent,
+              icon: Icon(Icons.shopping_cart, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => OrderCartScreen(),
+                  ),
+                ).then(
+                  (value) => onBackPressed(),
+                );
+              },
             ),
-          ).then(
-                (value) => onBackPressed(),
+            counterChild: GFBadge(
+              shape: GFBadgeShape.circle,
+              color: Colors.orangeAccent,
+              child: Text(cart.length.toString()),
+            ),
           );
-        },
-      ),
-      counterChild: GFBadge(
-        shape: GFBadgeShape.circle,
-        color: Colors.orangeAccent,
-        child: Text(cart.length.toString()),
-      ),
-    );
+  }
+
+  onChanged(String value) {
+    setState(() {
+      products = mainDataList
+          .where(
+            (item) => item.name.toLowerCase().contains(
+                  value.toLowerCase(),
+                ),
+          )
+          .toList();
+    });
   }
 
   @override
@@ -111,21 +122,9 @@ class _ProductSearchState extends State<ProductSearchScreen> {
         child: Column(children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(12.0),
-            child: TextField(
+            child: TextFormField(
               autofocus: false,
-              onChanged: (String value) {
-                setState(() {
-                  products = mainDataList
-                      .where(
-                        (item) => item.name
-                            .toLowerCase()
-                            .contains(value.toLowerCase()),
-                      )
-                      .toList();
-                });
-              },
-              controller: _textController,
-              keyboardType: TextInputType.text,
+              onChanged: onChanged,
               decoration: InputDecoration(
                 filled: true,
                 hintText: 'Search Here...',
@@ -181,7 +180,7 @@ class _ProductSearchState extends State<ProductSearchScreen> {
                                   width: 60,
                                 ),
                                 title: Text(
-                                  products[index].name,
+                                  '${products[index].name}',
                                   style: TextStyle(
                                       fontSize: 18,
                                       color: Colors.black,

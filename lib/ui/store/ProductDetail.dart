@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   ProductDetailScreen(this.id);
 
@@ -200,23 +200,38 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   padding: EdgeInsets.only(left: 12, right: 12),
                   child: ListView(children: <Widget>[
                     GFCarousel(
-                        height: 200,
-                        items: images.map((_image) {
-                          return FadeInImage.assetNetwork(
+                      height: 200,
+                      items: images.map((_image) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ImageSliderViewScreen(
+                                      images: images,
+                                      position: 0,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: FadeInImage.assetNetwork(
                             height: 200,
                             image: _image,
                             width: _screenWidth,
                             placeholder: 'images/iv_empty.png',
-                          );
-                        }).toList(),
-                        autoPlay: true,
-                        pagination: true,
-                        viewportFraction: 1.0,
-                        onPageChanged: (index) {
-                          setState(() {
-                            index;
-                          });
-                        }),
+                          ),
+                        );
+                      }).toList(),
+                      autoPlay: true,
+                      pagination: true,
+                      viewportFraction: 1.0,
+                      onPageChanged: (index) {
+                        setState(() {
+                          index;
+                        });
+                      },
+                    ),
                     Divider(color: Colors.white),
                     Text(
                       _productDetails.name.toUpperCase(),

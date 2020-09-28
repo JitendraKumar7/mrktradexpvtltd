@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class PartySalesOrderScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   const PartySalesOrderScreen({Key key, this.id}) : super(key: key);
 
@@ -66,6 +66,7 @@ class _PartySalesOrderState extends State<PartySalesOrderScreen> {
                 )
               : ListView(
                   children: _list.map((item) {
+                  String status = item['status'].toUpperCase();
                   return Column(
                     children: <Widget>[
                       ListTile(
@@ -85,7 +86,42 @@ class _PartySalesOrderState extends State<PartySalesOrderScreen> {
                             Expanded(
                               child: Text('#${item['id']}'),
                             ),
-                            Text(item['status'].toUpperCase())
+                            InkWell(
+                              onTap: () {
+                                if (status == 'Received'.toUpperCase())
+                                  AwesomeDialog(
+                                      context: context,
+                                      dismissOnTouchOutside: false,
+                                      dialogType: DialogType.INFO,
+                                      animType: AnimType.BOTTOMSLIDE,
+                                      title: 'Logout',
+                                      desc: 'Logout',
+                                      body: Text(
+                                        'Are you sure want to canceled order',
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      btnCancelOnPress: () {
+                                        ApiClient()
+                                            .changeOrderStatus(
+                                                item['id'], 'canceled')
+                                            .then((value) {
+                                          Map response = value.data;
+                                          if (response['status'] == '200') {
+                                            item['status'] = 'canceled';
+                                            setState(() {
+                                              _list[_list.indexWhere(
+                                                  (element) =>
+                                                      element['id'] ==
+                                                      item['id'])] = item;
+                                            });
+                                          }
+                                        });
+                                      }).show();
+                              },
+                              child: Text(status),
+                            ),
                           ],
                         ),
                         subtitle: Text(
