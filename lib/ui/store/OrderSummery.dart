@@ -24,95 +24,96 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
 
   _bookOrderNow() {
     AwesomeDialog(
-            context: context,
-            dialogType: DialogType.INFO,
-            animType: AnimType.RIGHSLIDE,
-            headerAnimationLoop: false,
-            title: 'Required',
-            desc: 'Required',
-            body: Text('Confirmation place order'),
-            btnOkText: 'Place Order',
-            btnOkOnPress: () {
-              List<String> unit = List<String>();
-              List<String> amount = List<String>();
-              List<String> product = List<String>();
-              List<String> quantity = List<String>();
-              List<String> productId = List<String>();
-              List<String> extraParams = List<String>();
-              widget.summery.forEach((element) {
-                productId.add(element.id.toString());
-                quantity.add(element.controller.text);
-                amount.add(element.amount);
-                unit.add(element.unit);
-                product.add(element.product);
-                extraParams.add(element.extraParams);
-              });
+        context: context,
+        dialogType: DialogType.INFO,
+        animType: AnimType.RIGHSLIDE,
+        headerAnimationLoop: false,
+        title: 'Required',
+        desc: 'Required',
+        body: Text('Confirmation place order'),
+        btnOkText: 'Place Order',
+        btnOkOnPress: () {
+          List<String> unit = List<String>();
+          List<String> amount = List<String>();
+          List<String> product = List<String>();
+          List<String> quantity = List<String>();
+          List<String> productId = List<String>();
+          List<String> extraParams = List<String>();
+          widget.summery.forEach((element) {
+            productId.add(element.id.toString());
+            quantity.add(element.controller.text);
+            amount.add(element.amount);
+            unit.add(element.unit);
+            product.add(element.product);
+            extraParams.add(element.extraParams);
+          });
 
-              Map<String, dynamic> params = Map<String, dynamic>();
+          Map<String, dynamic> params = Map<String, dynamic>();
 
-              params['user_id'] = '';
-              params['address1'] = '';
-              params['address2'] = '';
+          params['user_id'] = '';
+          params['address1'] = '';
+          params['address2'] = '';
 
-              params['email'] = _emailId.text;
-              params['firm_name'] = _name.text;
-              params['pincode'] = _pinCode.text;
-              params['remark'] = _orderRemark.text;
-              params['address'] = _billAddress.text;
-              params['gstNumber'] = _gstNumber.text;
-              params['contact_number'] = _mobile.text;
+          params['email'] = _emailId.text;
+          params['firm_name'] = _name.text;
+          params['pincode'] = _pinCode.text;
+          params['remark'] = _orderRemark.text;
+          params['address'] = _billAddress.text;
+          params['gstNumber'] = _gstNumber.text;
+          params['contact_number'] = _mobile.text;
 
-              var id = profile == null ? '' : profile.id;
-              params['btob_id'] = id;
-              params['account_name_id'] = id;
+          var id = profile == null ? '' : profile.id;
+          params['btob_id'] = id;
+          params['account_name_id'] = id;
 
-              params['unit'] = unit;
-              params['amount'] = amount;
-              params['product'] = product;
-              params['quantity'] = quantity;
-              params['product_id'] = productId;
+          params['unit'] = unit;
+          params['amount'] = amount;
+          params['product'] = product;
+          params['quantity'] = quantity;
+          params['product_id'] = productId;
 
-              params['parms'] = extraParams;
-              params['orderFormData'] = List<String>();
+          params['parms'] = extraParams;
+          params['orderFormData'] = List<String>();
 
-              print(params.toString());
-              ProgressDialog dialog =
-                  ProgressDialog(context, isDismissible: false);
-              dialog.style(
-                  message: 'Please Wait...',
-                  progressWidget: CircularProgressIndicator());
-              dialog.show();
-              ApiClient().addBooking(params).then((value) => {
-                    orderNumber = value.data['result'],
+          print(params.toString());
+          ProgressDialog dialog =
+          ProgressDialog(context, isDismissible: false);
+          dialog.style(
+              message: 'Please Wait...',
+              progressWidget: CircularProgressIndicator());
+          dialog.show();
+          ApiClient().addBooking(params).then((value) =>
+          {
+            orderNumber = value.data['result'],
 
-                    print(value),
-                    dialog.hide(),
+            print(value),
+            dialog.hide(),
 
-                    AwesomeDialog(
-                        title: 'Success',
-                        context: context,
-                        animType: AnimType.SCALE,
-                        dismissOnTouchOutside: false,
-                        btnOkIcon: Icons.check_circle,
-                        dialogType: DialogType.SUCCES,
-                        desc:
-                            'Thank you, your order #$orderNumber has been successfully completed!',
-                        btnOkOnPress: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => SplashScreen(),
-                            ),
-                          );
-                        }).show(),
+            AwesomeDialog(
+                title: 'Success',
+                context: context,
+                animType: AnimType.SCALE,
+                dismissOnTouchOutside: false,
+                btnOkIcon: Icons.check_circle,
+                dialogType: DialogType.SUCCES,
+                desc:
+                'Thank you, your order #$orderNumber has been successfully completed!',
+                btnOkOnPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => SplashScreen(),
+                    ),
+                  );
+                }).show(),
 
-                    //{"status":"200","message":"success","result":3585}
-                    AppPreferences.setString(AppConstants.USER_CART_DATA,
-                        jsonEncode(List<String>())),
-                  });
-            },
-            btnOkIcon: Icons.cancel,
-            btnOkColor: Colors.red)
+            //{"status":"200","message":"success","result":3585}
+            AppPreferences.setString(AppConstants.USER_CART_DATA,
+                jsonEncode(List<String>())),
+          });
+        },
+        btnOkIcon: Icons.cancel,
+        btnOkColor: Colors.red)
         .show();
   }
 
@@ -120,37 +121,40 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
   void initState() {
     super.initState();
 
-    ApiClient().getPaymentButton().then((value) => {
-          setState(() {
-            print(value.data);
-            Map response = value.data;
-            if (response['status'] == '200') {
-              paymentCode = response['result']['payment_code'];
-              print('Payment Code $paymentCode');
-            }
-          }),
-        });
+    ApiClient().getPaymentButton().then((value) =>
+    {
+      setState(() {
+        print(value.data);
+        Map response = value.data;
+        if (response['status'] == '200') {
+          paymentCode = response['result']['payment_code'];
+          print('Payment Code $paymentCode');
+        }
+      }),
+    });
 
     String key = AppConstants.USER_LOGIN_CREDENTIAL;
-    AppPreferences.getString(key).then((credential) => {
-          setState(() {
-            UserLogin login = UserLogin.formJson(credential);
-            if (login.isMaster && login.isLogin) {
-              String key = AppConstants.USER_LOGIN_DATA;
-              AppPreferences.getString(key).then((value) => {
-                    setState(() {
-                      Map response = jsonDecode(value);
-                      profile = UserProfile.fromJson(response);
-                      _billAddress.text = profile.address.trim();
-                      _gstNumber.text = profile.gstIn.trim();
-                      _emailId.text = profile.email.trim();
-                      _mobile.text = profile.phone.trim();
-                      _name.text = profile.name.trim();
-                    }),
-                  });
-            }
-          }),
-        });
+    AppPreferences.getString(key).then((credential) =>
+    {
+      setState(() {
+        UserLogin login = UserLogin.formJson(credential);
+        if (login.isMaster && login.isLogin) {
+          String key = AppConstants.USER_LOGIN_DATA;
+          AppPreferences.getString(key).then((value) =>
+          {
+            setState(() {
+              Map response = jsonDecode(value);
+              profile = UserProfile.fromJson(response);
+              _billAddress.text = profile.address.trim();
+              _gstNumber.text = profile.gstIn.trim();
+              _emailId.text = profile.email.trim();
+              _mobile.text = profile.phone.trim();
+              _name.text = profile.name.trim();
+            }),
+          });
+        }
+      }),
+    });
   }
 
   Widget getItemList() {
@@ -215,18 +219,15 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
         amount = double.tryParse(cart.price) ?? 0.00;
       }
 
-      double disAmount =
-          double.parse(((counter * amount * dis) / 100).toStringAsFixed(2));
+      double subAmount = counter * amount;
+      double disAmount = subAmount - ((subAmount * dis) / 100);
 
-      double subAmount = double.parse((counter * amount).toStringAsFixed(2));
-      double gstAmount =
-          double.parse(((counter * amount * gst) / 100).toStringAsFixed(2));
-      double totalAmount = double.parse(
-          (((counter * amount) + gstAmount) - disAmount).toStringAsFixed(2));
-      grandTotalAmount =
-          double.parse((grandTotalAmount += totalAmount).toStringAsFixed(2));
-      grandDiscountAmount =
-          double.parse((grandDiscountAmount += disAmount).toStringAsFixed(2));
+      double gstAmount = (disAmount * gst) / 100;
+      double totalAmount = disAmount + gstAmount;
+
+      grandTotalAmount = grandTotalAmount += totalAmount;
+      grandDiscountAmount = grandDiscountAmount += disAmount;
+
       return Column(
         children: <Widget>[
           Row(children: <Widget>[
@@ -286,30 +287,33 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
           Divider(),
           discount
               ? Row(children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      'Discount',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 12, color: Colors.black),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      '₹ ${disAmount.toStringAsFixed(2)}',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 12, color: Colors.black),
-                    ),
-                  ),
-                ])
+            Expanded(
+              flex: 2,
+              child: Text(
+                'Discount',
+                textAlign: TextAlign.end,
+                style: TextStyle(fontSize: 12, color: Colors.black),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Text(
+                '₹ ${disAmount.toStringAsFixed(2)}',
+                textAlign: TextAlign.end,
+                style: TextStyle(fontSize: 12, color: Colors.black),
+              ),
+            ),
+          ])
               : SizedBox(height: 0)
         ],
       );
     }).toList());
 
     variantWidgets.add(Container(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -326,7 +330,10 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
     ));
     return Container(
       padding: EdgeInsets.only(top: 12, bottom: 12),
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       child: Column(children: variantWidgets),
     );
   }
@@ -452,7 +459,10 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
           color: Colors.blue.shade300,
           border: new Border.all(color: Colors.grey.shade50, width: 1),
           borderRadius: new BorderRadius.circular(12.0)),
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       child: Column(children: variantWidgets),
     );
   }
@@ -478,15 +488,15 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
                 // Error
                 else {
                   AwesomeDialog(
-                          context: context,
-                          dialogType: DialogType.ERROR,
-                          animType: AnimType.RIGHSLIDE,
-                          headerAnimationLoop: false,
-                          title: 'Required',
-                          desc: 'Name, Phone or Address is required',
-                          btnOkOnPress: () {},
-                          btnOkIcon: Icons.cancel,
-                          btnOkColor: Colors.red)
+                      context: context,
+                      dialogType: DialogType.ERROR,
+                      animType: AnimType.RIGHSLIDE,
+                      headerAnimationLoop: false,
+                      title: 'Required',
+                      desc: 'Name, Phone or Address is required',
+                      btnOkOnPress: () {},
+                      btnOkIcon: Icons.cancel,
+                      btnOkColor: Colors.red)
                       .show();
                 }
               }),
@@ -500,41 +510,41 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
     return paymentCode == null
         ? SizedBox(width: 0)
         : Expanded(
-            child: GFButton(
-                size: 45,
-                text: 'PAY NOW',
-                fullWidthButton: true,
-                type: GFButtonType.outline,
-                onPressed: () {
-                  if (_name.text.length > 4 &&
-                      _mobile.text.length > 9 &&
-                      _billAddress.text.length > 4) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            WebViewFlutter(paymentCode: paymentCode),
-                      ),
-                    ).then(
-                      (value) => _bookOrderNow(),
-                    );
-                  }
-                  // Error
-                  else {
-                    AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.ERROR,
-                            animType: AnimType.RIGHSLIDE,
-                            headerAnimationLoop: false,
-                            title: 'Required',
-                            desc: 'Name, Phone and Address is required',
-                            btnOkOnPress: () {},
-                            btnOkIcon: Icons.cancel,
-                            btnOkColor: Colors.red)
-                        .show();
-                  }
-                }),
-          );
+      child: GFButton(
+          size: 45,
+          text: 'PAY NOW',
+          fullWidthButton: true,
+          type: GFButtonType.outline,
+          onPressed: () {
+            if (_name.text.length > 4 &&
+                _mobile.text.length > 9 &&
+                _billAddress.text.length > 4) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      WebViewFlutter(paymentCode: paymentCode),
+                ),
+              ).then(
+                    (value) => _bookOrderNow(),
+              );
+            }
+            // Error
+            else {
+              AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.ERROR,
+                  animType: AnimType.RIGHSLIDE,
+                  headerAnimationLoop: false,
+                  title: 'Required',
+                  desc: 'Name, Phone and Address is required',
+                  btnOkOnPress: () {},
+                  btnOkIcon: Icons.cancel,
+                  btnOkColor: Colors.red)
+                  .show();
+            }
+          }),
+    );
   }
 
   @override
