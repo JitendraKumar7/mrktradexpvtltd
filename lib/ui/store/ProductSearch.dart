@@ -166,7 +166,7 @@ class _ProductSearchState extends State<ProductSearchScreen> {
                                         ProductDetailScreen(id),
                                   ),
                                 ).then((value) => {
-                                      if (value && widget.isBack)
+                                      if (value && widget.isBack ?? false)
                                         Navigator.of(context).pop(true)
                                       else
                                         onBackPressed()

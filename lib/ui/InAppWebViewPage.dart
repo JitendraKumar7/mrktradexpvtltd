@@ -3,9 +3,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class InAppWebViewPage extends StatefulWidget {
-  final String payload;
+  final String url;
 
-  const InAppWebViewPage({Key key, this.payload = ''}) : super(key: key);
+  const InAppWebViewPage({Key key, this.url = ''}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _InAppWebViewPageState();
@@ -17,20 +17,20 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   @override
   void initState() {
     super.initState();
-
-    if (widget.payload.isEmpty) {
-      getVideoConferencing();
-    } else {
-      initPayload();
-    }
+    initPayload();
   }
 
   initPayload() async {
-    var microphone = await Permission.microphone.request();
-    var camera = await Permission.camera.request();
-    var granted = PermissionStatus.granted;
-    if (microphone == granted && camera == granted) {
-      _controller.loadUrl(url: widget.payload);
+    if (widget.url?.isEmpty ?? true) {
+      getVideoConferencing();
+    } else {
+      var microphone = await Permission.microphone.request();
+      var camera = await Permission.camera.request();
+      var granted = PermissionStatus.granted;
+      if (microphone == granted && camera == granted) {
+        print('InAppWebViewPage ${widget.url}');
+        _controller.loadUrl(url: widget.url);
+      }
     }
   }
 

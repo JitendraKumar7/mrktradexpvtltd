@@ -1,7 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:rxdart/subjects.dart';
 import 'ui/base/libraryExport.dart';
 import 'dart:async';
 import 'dart:io';
@@ -9,68 +9,146 @@ import 'dart:ui';
 
 var appLaunch;
 
-final selectNotification = BehaviorSubject<String>();
-
+final navigatorKey = GlobalKey<NavigatorState>();
 final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
-final receiveNotification = BehaviorSubject<ReceivedNotification>();
+Future<void> _showNotification(int id, Map<String, dynamic> message) async {
+  // Show a notification after every 15 minute with the first
+  // appearance happening a minute after invoking the method
 
-Future main() async {
+  /*final MethodChannel platform =
+      MethodChannel('crossingthestreams.io/resourceResolver');
+  String alarmUri = await platform.invokeMethod('getAlarmUri');*/
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    'mrktradexpvtltd1', 'mrk tradex', 'mrk tradex pvt ltd',
+    //sound: RawResourceAndroidNotificationSound('slow_spring_board'),
+    importance: Importance.Max,
+    priority: Priority.High,
+    playSound: true,
+  );
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
+  // initialise channel platform for both Android and iOS device.
+  var platformChannelSpecifics = NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  await notificationsPlugin.show(
+    id,
+    '${message['data']['title']}',
+    message['data']['body'],
+    platformChannelSpecifics,
+    payload: jsonEncode(message),
+  );
+}
+
+Future<dynamic> onBackgroundMessageHandler(Map<String, dynamic> message) async {
+  _showNotification(3, message);
+  print('onBackgroundMessage: $message');
+  return Future<void>.value();
+}
+
+class NotificationHandler {
+  static final NotificationHandler _singleton = NotificationHandler._internal();
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+
+  factory NotificationHandler() {
+    return _singleton;
+  }
+
+  NotificationHandler._internal();
+
+  Future<String> getToken() => _fcm.getToken();
+
+  Future<void> initialise() async {
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    var initializationSettingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+
+    notificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        _showNotification(0, message);
+        print('onMessage: $message');
+      },
+      onBackgroundMessage: Platform.isIOS ? null : onBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        _showNotification(2, message);
+        print('onLaunch: $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        _showNotification(3, message);
+        print('onResume: $message');
+      },
+    );
+  }
+
+  Future<void> onSelectNotification(String payload) async {
+    Map result = jsonDecode(payload);
+    String url = result['data']['url'];
+    if (appLaunch?.didNotificationLaunchApp ?? false) {
+      print('SelectNotificationLaunchApp $url');
+    }
+    // app already opened
+    else if (url.isNotEmpty) {
+      print('SelectNotification url $url');
+      await navigatorKey.currentState.push(
+        MaterialPageRoute(
+          builder: (context) => InAppWebViewPage(url: url),
+        ),
+      );
+    }
+  }
+
+  Future<void> register() => getToken().then((token) => print(token));
+
+  Future<void> onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) async {
+    print('onDidReceiveLocalNotification $payload');
+  }
+}
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   appLaunch = await notificationsPlugin.getNotificationAppLaunchDetails();
 
-  await notificationsPlugin.initialize(
-      InitializationSettings(
-        AndroidInitializationSettings('app_icon'),
-        IOSInitializationSettings(
-            requestAlertPermission: false,
-            requestBadgePermission: false,
-            requestSoundPermission: false,
-            onDidReceiveLocalNotification:
-                (int id, String title, String body, String payload) async {
-              receiveNotification.add(
-                ReceivedNotification(
-                    id: id, title: title, body: body, payload: payload),
-              );
-            }),
-      ), onSelectNotification: (String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
-    }
-    selectNotification.add(payload);
-  });
   setupLocator();
   runApp(MyApp());
 }
 
-// Received Notification Screen start
-class ReceivedNotification {
-  final int id;
-  final String title;
-  final String body;
-  final String payload;
-
-  ReceivedNotification({
-    @required this.id,
-    @required this.title,
-    @required this.body,
-    @required this.payload,
-  });
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => MyAppState();
 }
 
-class MyApp extends StatelessWidget {
+class MyAppState extends State<MyApp> {
+  NotificationHandler handler;
+
+  @override
+  void initState() {
+    super.initState();
+    handler = NotificationHandler();
+    handler.initialise();
+    handler.register();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'APP',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: SplashScreen(
         splash: true,
       ),
+      title: 'APP',
     );
   }
 }
@@ -86,242 +164,95 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final PushNotificationService _pushNotificationService =
-      locator<PushNotificationService>();
-
-  _showNotification(int id, String title, String body, String payload) async {
-    await notificationsPlugin.show(
-      id,
-      '$id $title',
-      body,
-      NotificationDetails(
-        AndroidNotificationDetails(
-            'mrk_channel_id', 'mrk_channel_name', 'mrk_channel_description',
-            importance: Importance.Max,
-            priority: Priority.High,
-            ticker: 'ticker'),
-        IOSNotificationDetails(),
-      ),
-      payload: payload,
-    );
-  }
-
   @override
   void initState() {
     super.initState();
-
-    _requestIOSPermissions();
-    _configureSelectNotificationSubject();
-    _configureDidReceiveLocalNotificationSubject();
-
-    _pushNotificationService.register();
-    _pushNotificationService.getFcm().configure(
-        onMessage: (Map<String, dynamic> message) async {
-      _showNotification(0, message['data']['title'], message['data']['body'],
-          message['data']['url']);
-      print('onMessage: $message');
-    }, onLaunch: (Map<String, dynamic> message) async {
-      _showNotification(1, message['data']['title'], message['data']['body'],
-          message['data']['url']);
-      print('onLaunch: $message');
-    }, onResume: (Map<String, dynamic> message) async {
-      _showNotification(2, message['data']['title'], message['data']['body'],
-          message['data']['url']);
-      print('onResume: $message');
-    });
-    ;
-
     if (widget.splash) {
-      var duration = const Duration(milliseconds: 3000);
-      Future.delayed(duration, openDashboard);
+      if (appLaunch?.didNotificationLaunchApp ?? false) {
+        print('InAppWebViewPage ${appLaunch?.payload}');
+        Map result = jsonDecode(appLaunch?.payload);
+        String url = result['data']['url'];
+        print('SelectNotification url $url');
+        if (url.isNotEmpty) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => InAppWebViewPage(url: url),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        }
+      }
+      // normal app
+      else {
+        var duration = const Duration(milliseconds: 3000);
+        Future.delayed(duration, openDashboard);
+      }
     } else {
       openDashboard();
     }
   }
 
-  void _requestIOSPermissions() {
-    notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
-  }
-
-  void _configureSelectNotificationSubject() {
-    selectNotification.stream.listen((String payload) async {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => InAppWebViewPage(),
-        ),
-      );
-    });
-  }
-
-  void _configureDidReceiveLocalNotificationSubject() {
-    receiveNotification.stream
-        .listen((ReceivedNotification receivedNotification) async {
-      await showDialog(
-        context: context,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-          title: receivedNotification.title != null
-              ? Text(receivedNotification.title)
-              : null,
-          content: receivedNotification.body != null
-              ? Text(receivedNotification.body)
-              : null,
-          actions: [
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: Text('Ok'),
-              onPressed: () async {
-                Navigator.of(context, rootNavigator: true).pop();
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => InAppWebViewPage(),
-                  ),
-                );
-              },
-            )
-          ],
-        ),
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    receiveNotification.close();
-    selectNotification.close();
-    super.dispose();
-  }
-
   void openDashboard() async {
-    if (appLaunch?.didNotificationLaunchApp ?? false) {
-      print('app payload ${appLaunch.payload}');
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => InAppWebViewPage(payload: appLaunch.payload),
-        ),
-      );
-    }
-    // normal app open
-    else {
-      Map response = (await ApiClient().getCardDetails()).data;
+    Map response = (await ApiClient().getCardDetails()).data;
 
-      if (response['status'] == '200') {
-        Map result = response['result'];
-        String key1 = AppConstants.KONNECT_DATA;
-        AppPreferences.setString(key1, jsonEncode(result));
-        KonnectDetails details = KonnectDetails.fromJson(result);
+    if (response['status'] == '200') {
+      Map result = response['result'];
+      String key1 = AppConstants.KONNECT_DATA;
+      AppPreferences.setString(key1, jsonEncode(result));
+      KonnectDetails details = KonnectDetails.fromJson(result);
 
-        String key2 = AppConstants.USER_LOGIN_CREDENTIAL;
-        var credential = await AppPreferences.getString(key2);
+      String key2 = AppConstants.USER_LOGIN_CREDENTIAL;
+      var credential = await AppPreferences.getString(key2);
 
-        UserLogin login = UserLogin.formJson(credential);
+      UserLogin login = UserLogin.formJson(credential);
 
-        if (login.isLogin) {
-          Map params = Map();
-          String deviceId = await _getId();
-          String fcmToken = await _pushNotificationService.getToken();
-          String userType = login.userType.toString().split('.').last;
+      if (login.isLogin) {
+        Map params = Map();
+        String deviceId = await _getId();
+        String fcmToken = await NotificationHandler().getToken();
+        String userType = login.userType.toString().split('.').last;
 
-          params['loginId'] = login.loginId;
-          params['userType'] = userType;
-          params['fcmToken'] = fcmToken;
-          params['deviceId'] = deviceId;
+        params['loginId'] = login.loginId;
+        params['userType'] = userType;
+        params['fcmToken'] = fcmToken;
+        params['deviceId'] = deviceId;
 
-          Map response = (await ApiClient().checkedLogin(params)).data;
+        Map response = (await ApiClient().checkedLogin(params)).data;
 
-          if (response['status'] == '200') {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: getBuilder(login, details),
-              ),
-              (Route<dynamic> route) => false,
-            );
-          }
-          // log out
-          else {
-            AwesomeDialog(
-                context: context,
-                dismissOnTouchOutside: false,
-                dialogType: DialogType.INFO,
-                animType: AnimType.BOTTOMSLIDE,
-                title: 'Logout',
-                desc: 'Logout',
-                body: Text(
-                  'User already login another device',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-                btnOkText: 'Logout',
-                btnOkOnPress: () {
-                  logout(details);
-                }).show();
-          }
+        if (response['status'] == '200') {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: getBuilder(login, details),
+            ),
+            (Route<dynamic> route) => false,
+          );
         }
         // log out
         else {
-          logout(details);
+          AwesomeDialog(
+              context: context,
+              dismissOnTouchOutside: false,
+              dialogType: DialogType.INFO,
+              animType: AnimType.BOTTOMSLIDE,
+              title: 'Logout',
+              desc: 'Logout',
+              body: Text(
+                'User already login another device',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              btnOkText: 'Logout',
+              btnOkOnPress: () {
+                logout(details);
+              }).show();
         }
       }
+      // log out
+      else {
+        logout(details);
+      }
     }
-
-    /* ApiClient().getCardDetails().then((value) {
-      setState(() {
-        Map response = value.data;
-        if (response['status'] == '200') {
-          String key1 = AppConstants.KONNECT_DATA;
-          String key2 = AppConstants.USER_LOGIN_CREDENTIAL;
-
-          Map<String, dynamic> result = response['result'];
-
-          AppPreferences.setString(key1, jsonEncode(result));
-          KonnectDetails details = KonnectDetails.fromJson(result);
-
-          MaterialPageRoute newRoute;
-          AppPreferences.getString(key2).then((credential) => {
-                setState(() {
-                  UserLogin login = UserLogin.formJson(credential);
-                  if (login.isSuper && login.isLogin)
-                    newRoute = MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          AdminDashboardScreen(details, 'Admin'),
-                    );
-                  else if (login.isAdmin && login.isLogin)
-                    newRoute = MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          AdminDashboardScreen(details, 'Co-Admin'),
-                    );
-                  else if (login.isLinked && login.isLogin)
-                    newRoute = MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          LinkUserDashboardScreen(details),
-                    );
-                  else if (login.isMaster && login.isLogin)
-                    newRoute = MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          PartyDashboardScreen(details),
-                    );
-                  else
-                    newRoute = MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          DashboardScreen(details),
-                    );
-
-                  RoutePredicate predicate = (Route<dynamic> route) => false;
-                  Navigator.pushAndRemoveUntil(context, newRoute, predicate);
-                })
-              });
-        }
-      });
-    });*/
   }
 
   Future<String> _getId() async {

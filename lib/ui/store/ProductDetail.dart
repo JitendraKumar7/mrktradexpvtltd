@@ -209,9 +209,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     ImageSliderViewScreen(
-                                      images: images,
-                                      position: 0,
-                                    ),
+                                  images: images,
+                                  position: 0,
+                                ),
                               ),
                             );
                           },
@@ -425,16 +425,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               setState(() {
                 cart.add(
                   CartSummery(
-                      _productDetails.id,
-                      _productDetails.unit,
-                      _productDetails.image,
-                      item.paramsTradePrice,
-                      _productDetails.gstRate,
-                      _productDetails.name,
-                      _productDetails.moq,
-                      _productDetails.stock,
-                      _productDetails.checkStock,
-                      item.paramsOne + ' ' + item.paramsTwo),
+                    _productDetails.id,
+                    _productDetails.unit,
+                    _productDetails.image,
+                    item.paramsTradePrice,
+                    _productDetails.gstRate,
+                    _productDetails.name,
+                    _productDetails.moq,
+                    _productDetails.stock,
+                    _productDetails.checkStock,
+                    item.paramsOne + ' ' + item.paramsTwo,
+                    _productDetails.price,
+                    _productDetails.discount,
+                    _productDetails.discountOn,
+                  ),
                 );
                 String key = AppConstants.USER_CART_DATA;
                 AppPreferences.setString(key, jsonEncode(cart));

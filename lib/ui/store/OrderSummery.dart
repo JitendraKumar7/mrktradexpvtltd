@@ -155,6 +155,7 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
 
   Widget getItemList() {
     var grandTotalAmount = 0.00;
+    var grandDiscountAmount = 0.00;
     var variantWidgets = List<Widget>();
     variantWidgets.add(Row(children: <Widget>[
       Expanded(
@@ -199,15 +200,33 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
     variantWidgets.addAll(widget.summery.map((cart) {
       double counter = double.tryParse(cart.controller.text) ?? 1;
       double amount = double.tryParse(cart.amount) ?? 0.00;
+      int dis = int.tryParse(cart.discount) ?? 0;
       int gst = int.tryParse(cart.gstRate) ?? 0;
+
+      bool discount = false;
+      if (cart.discountOn == 'discount_on_selling_price') {
+        // discount_on_selling_price
+        discount = true;
+        amount = double.tryParse(cart.amount) ?? 0.00;
+      }
+      if (cart.discountOn == 'discount_on_mrp') {
+        // discount_on_mrp
+        discount = true;
+        amount = double.tryParse(cart.price) ?? 0.00;
+      }
+
+      double disAmount =
+          double.parse(((counter * amount * dis) / 100).toStringAsFixed(2));
 
       double subAmount = double.parse((counter * amount).toStringAsFixed(2));
       double gstAmount =
           double.parse(((counter * amount * gst) / 100).toStringAsFixed(2));
-      double totalAmount =
-          double.parse(((counter * amount) + gstAmount).toStringAsFixed(2));
+      double totalAmount = double.parse(
+          (((counter * amount) + gstAmount) - disAmount).toStringAsFixed(2));
       grandTotalAmount =
           double.parse((grandTotalAmount += totalAmount).toStringAsFixed(2));
+      grandDiscountAmount =
+          double.parse((grandDiscountAmount += disAmount).toStringAsFixed(2));
       return Column(
         children: <Widget>[
           Row(children: <Widget>[
@@ -264,7 +283,27 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
               ),
             ),
           ]),
-          Divider()
+          Divider(),
+          discount
+              ? Row(children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      'Discount',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 12, color: Colors.black),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      '₹ ${disAmount.toStringAsFixed(2)}',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 12, color: Colors.black),
+                    ),
+                  ),
+                ])
+              : SizedBox(height: 0)
         ],
       );
     }).toList());

@@ -14,6 +14,10 @@ class CartSummery {
   String checkStock;
   String extraParams;
 
+  String price;
+  String discount;
+  String discountOn;
+
   CartSummery(
       this.id,
       this.unit,
@@ -24,10 +28,16 @@ class CartSummery {
       this.minOrder,
       this.stock,
       this.checkStock,
-      this.extraParams);
+      this.extraParams,
+      this.price,
+      this.discount,
+      this.discountOn);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['price'] = this.price;
+    data['discount'] = this.discount;
+    data['discountOn'] = this.discountOn;
     data['extraParams'] = this.extraParams;
     data['checkStock'] = this.checkStock;
     data['minOrder'] = this.minOrder;
@@ -42,6 +52,9 @@ class CartSummery {
   }
 
   CartSummery.fromJson(Map<String, dynamic> json) {
+    price = json['price'];
+    discount = json['discount'];
+    discountOn = json['discountOn'];
     extraParams = json['extraParams'];
     checkStock = json['checkStock'];
     minOrder = json['minOrder'];
@@ -55,6 +68,10 @@ class CartSummery {
   }
 
   CartSummery.fromProductDetails(ProductDetails details) {
+    price = details.price;
+    discount = details.discount;
+    discountOn = details.discountOn;
+
     checkStock = details.checkStock;
     amount = details.tradePrice;
     gstRate = details.gstRate;

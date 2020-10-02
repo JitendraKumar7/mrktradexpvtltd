@@ -26,28 +26,30 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
   }
 
   void initCart() async {
-  /*  String key = AppConstants.USER_CART_DATA;
+    String key = AppConstants.USER_CART_DATA;
     String value = await AppPreferences.getString(key);
 
     if (value != null) {
-      cartSummery = List<CartSummery>();
-      for (Map json in jsonDecode(value)) {
-        cartSummery.add(CartSummery.fromJson(json));
-      }
-    }*/
+      setState(() {
+        cartSummery = List<CartSummery>();
+        for (Map json in jsonDecode(value)) {
+          cartSummery.add(CartSummery.fromJson(json));
+        }
+      });
+    }
 
-     AppPreferences.getString(AppConstants.USER_CART_DATA).then((value) => {
-          if (value != null)
-            {
-              setState(() {
-                cartSummery = List<CartSummery>();
-                for (Map json in jsonDecode(value)) {
-                  cartSummery.add(CartSummery.fromJson(json));
-                }
-              })
+    /* AppPreferences.getString(AppConstants.USER_CART_DATA).then((value) =>
+    {
+      if (value != null)
+        {
+          setState(() {
+            cartSummery = List<CartSummery>();
+            for (Map json in jsonDecode(value)) {
+              cartSummery.add(CartSummery.fromJson(json));
             }
-        });
-
+          })
+        }
+    });*/
   }
 
   @override
@@ -153,9 +155,9 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                                   icon: Icon(Icons.remove_circle_outline),
                                   onPressed: () {
                                     String value = item.controller.text;
-                                    if (int.parse(value) > 1) {
+                                    if (int.tryParse(value) > 1) {
                                       item.controller.text =
-                                          (int.parse(value) - 1).toString();
+                                          (int.tryParse(value) - 1).toString();
                                     }
                                   },
                                 ),
@@ -171,11 +173,12 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                                   icon: Icon(Icons.add_circle_outline),
                                   onPressed: () {
                                     int value =
-                                        int.tryParse(item.controller.text);
-                                    int stock = int.tryParse(item.stock) ?? 0;
-                                    value = value + 1;
+                                        int.tryParse(item.controller.text) ?? 0;
+                                    item.controller.text =
+                                        (value + 1).toString();
 
-                                    if (item.checkStock == '0') {
+                                    //int stock = int.tryParse(item.stock) ?? 0;
+                                    /*if (item.checkStock == '0') {
                                       item.controller.text = value.toString();
                                     }
                                     //
@@ -194,7 +197,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                                               dialogType: DialogType.WARNING,
                                               btnOkOnPress: () {})
                                           .show();
-                                    }
+                                    }*/
                                   },
                                 ),
                               ]),
