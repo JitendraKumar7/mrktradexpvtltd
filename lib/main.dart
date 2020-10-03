@@ -56,11 +56,10 @@ class NotificationHandler {
 
   NotificationHandler._internal();
 
-  Future<String> getToken() => _fcm.getToken();
 
   Future<void> initialise() async {
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
@@ -88,6 +87,8 @@ class NotificationHandler {
     );
   }
 
+  Future<String> getToken() async => _fcm.getToken();
+
   Future<void> onSelectNotification(String payload) async {
     Map result = jsonDecode(payload);
     String url = result['data']['url'];
@@ -111,6 +112,7 @@ class NotificationHandler {
       int id, String title, String body, String payload) async {
     print('onDidReceiveLocalNotification $payload');
   }
+
 }
 
 Future<void> main() async {
@@ -213,6 +215,7 @@ class _SplashScreenState extends State<SplashScreen> {
         String fcmToken = await NotificationHandler().getToken();
         String userType = login.userType.toString().split('.').last;
 
+        params['serverKey'] = AppConstants.getServerKey;
         params['loginId'] = login.loginId;
         params['userType'] = userType;
         params['fcmToken'] = fcmToken;
@@ -220,7 +223,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
         Map response = (await ApiClient().checkedLogin(params)).data;
 
-        if (response['status'] == '200') {
+        if (response['status'] == '200' || login.isMaster) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -229,7 +232,7 @@ class _SplashScreenState extends State<SplashScreen> {
             (Route<dynamic> route) => false,
           );
         }
-        // log out
+        // log out admin
         else {
           AwesomeDialog(
               context: context,
