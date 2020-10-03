@@ -3,7 +3,8 @@ import '../../base/libraryExport.dart';
 class PartyMasterMobileScreen extends StatefulWidget {
   final String logo;
 
-  const PartyMasterMobileScreen({Key key, @required this.logo}) : super(key: key);
+  const PartyMasterMobileScreen({Key key, @required this.logo})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PartyMasterMobileState();
@@ -71,35 +72,58 @@ class _PartyMasterMobileState extends State<PartyMasterMobileScreen> {
                     if (loginId.length == 10 ||
                         loginId.length == 12 ||
                         loginId.length == 15) {
-                      ProgressDialog dialog = ProgressDialog(context, isDismissible: false);
+                      ProgressDialog dialog =
+                          ProgressDialog(context, isDismissible: false);
                       dialog.show();
 
                       ApiClient().checkPartyMaster(loginId).then((value) => {
-                        setState(() {
-                          dialog.hide();
-                          print(value.data);
-                          Map<String, dynamic> response = value.data;
-                          if (response['status'] == '200') {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => PartyMasterLoginScreen(
-                                  loginId: loginId,
-                                  logo: widget.logo,
-                                ),
-                              ),
-                            );
-                          }
-                          // new user sign up
-                          else {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
+                            setState(() {
+                              dialog.hide();
+                              print(value.data);
+                              Map<String, dynamic> response = value.data;
+                              if (response['status'] == '200') {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        PartyMasterRegisterScreen(loginId: loginId)));
-                          }
-                        })
-                      });
+                                        PartyMasterLoginScreen(
+                                      loginId: loginId,
+                                      logo: widget.logo,
+                                    ),
+                                  ),
+                                );
+                              }
+                              // new user sign up
+                              else {
+                                AwesomeDialog(
+                                  context: context,
+                                  animType: AnimType.SCALE,
+                                  dialogType: DialogType.ERROR,
+                                  title: 'This is Ignored',
+                                  desc: 'This is also Ignored',
+                                  body: Text(
+                                    'Don\'t have an account? Register!',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  dismissOnTouchOutside: false,
+                                  btnCancelOnPress: () {},
+                                  btnOkText: 'Register',
+                                  btnOkOnPress: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            PartyMasterRegisterScreen(
+                                                loginId: loginId),
+                                      ),
+                                    );
+                                  },
+                                ).show();
+                              }
+                            })
+                          });
                     }
                     // Login Id wrong
                     else {
@@ -137,5 +161,4 @@ class _PartyMasterMobileState extends State<PartyMasterMobileScreen> {
       ),
     );
   }
-
 }
