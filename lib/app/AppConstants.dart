@@ -6,12 +6,6 @@ class AppConstants {
 
   int get konnectId => konnect_id;
 
-  /*
-  int get userId => 5379;
-
-  int get konnectId => 5745;
-  */
-
   static const String KONNECT_DATA = 'com.meo.konnect.data';
   static const String USER_CART_DATA = 'com.meo.user.cart.data';
   static const String USER_LOGIN_DATA = 'com.meo.user.login.data';
