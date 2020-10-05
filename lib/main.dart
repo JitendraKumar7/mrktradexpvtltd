@@ -22,15 +22,19 @@ Future<void> _showNotification(int id, Map<String, dynamic> message) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
     'mrktradexpvtltd1', 'mrk tradex', 'mrk tradex pvt ltd',
     //sound: RawResourceAndroidNotificationSound('slow_spring_board'),
-    importance: Importance.Max,
-    priority: Priority.High,
+    importance: Importance.max,
+    priority: Priority.high,
     playSound: true,
   );
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var macOSPlatformChannelSpecifics = MacOSNotificationDetails();
 
   // initialise channel platform for both Android and iOS device.
   var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    android: androidPlatformChannelSpecifics,
+    macOS: macOSPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
   await notificationsPlugin.show(
     id,
     '${message['data']['title']}',
@@ -56,16 +60,20 @@ class NotificationHandler {
 
   NotificationHandler._internal();
 
-
   Future<void> initialise() async {
     var initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
+    var initializationSettingsMacOS = MacOSInitializationSettings();
+
     var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+      android: initializationSettingsAndroid,
+      macOS: initializationSettingsMacOS,
+      iOS: initializationSettingsIOS,
+    );
 
     notificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
@@ -112,7 +120,6 @@ class NotificationHandler {
       int id, String title, String body, String payload) async {
     print('onDidReceiveLocalNotification $payload');
   }
-
 }
 
 Future<void> main() async {

@@ -3,9 +3,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class InAppWebViewPage extends StatefulWidget {
+  final String title;
   final String url;
 
-  const InAppWebViewPage({Key key, this.url = ''}) : super(key: key);
+  const InAppWebViewPage(
+      {Key key, this.title = 'Video Conferencing', this.url = ''})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _InAppWebViewPageState();
@@ -116,7 +119,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Video Conferencing'),
+        title: Text(widget.title),
       ),
       body: InAppWebView(
         initialUrl: 'about:blank',

@@ -281,7 +281,7 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
               ),
             ),
           ]),
-           Divider(),
+          Divider(),
           isDiscount
               ? Row(children: <Widget>[
                   Expanded(
@@ -508,11 +508,18 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
                   if (_name.text.length > 4 &&
                       _mobile.text.length > 9 &&
                       _billAddress.text.length > 4) {
+                    String url = Uri.dataFromString(
+                      paymentCode,
+                      mimeType: 'text/html',
+                      encoding: Encoding.getByName('utf-8'),
+                    ).toString();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            WebViewFlutter(paymentCode: paymentCode),
+                        builder: (BuildContext context) => InAppWebViewPage(
+                          title: 'Payment',
+                          url: url,
+                        ),
                       ),
                     ).then(
                       (value) => _bookOrderNow(),
