@@ -99,18 +99,22 @@ class NotificationHandler {
 
   Future<void> onSelectNotification(String payload) async {
     Map result = jsonDecode(payload);
-    String url = result['data']['url'];
+    String url = result['data']['url'] ?? '';
     if (appLaunch?.didNotificationLaunchApp ?? false) {
       print('SelectNotificationLaunchApp $url');
     }
     // app already opened
-    else if (url.isNotEmpty) {
+    else if (url?.isNotEmpty ?? false) {
       print('SelectNotification url $url');
       await navigatorKey.currentState.push(
         MaterialPageRoute(
           builder: (context) => InAppWebViewPage(url: url),
         ),
       );
+    }
+    // url null
+    else {
+      print('SelectNotification url false');
     }
   }
 
@@ -178,11 +182,11 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     if (widget.splash) {
       if (appLaunch?.didNotificationLaunchApp ?? false) {
-        print('InAppWebViewPage ${appLaunch?.payload}');
+        print('SplashScreenState ${appLaunch?.payload}');
         Map result = jsonDecode(appLaunch?.payload);
-        String url = result['data']['url'];
-        print('SelectNotification url $url');
-        if (url.isNotEmpty) {
+        String url = result['data']['url'] ?? '';
+        print('SplashScreenState url $url');
+        if (url?.isNotEmpty ?? false) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -190,6 +194,11 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             (Route<dynamic> route) => false,
           );
+        }
+        // url is empty
+        else {
+          print('SplashScreenState false');
+          openDashboard();
         }
       }
       // normal app
