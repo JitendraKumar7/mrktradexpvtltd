@@ -206,12 +206,12 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
       bool isDiscount = false;
       if (cart.discountOn == 'discount_on_selling_price') {
         // discount_on_selling_price
-        isDiscount = true;
+        isDiscount = discount != 0;
         amount = double.tryParse(cart.amount) ?? 0.00;
       }
       if (cart.discountOn == 'discount_on_mrp') {
         // discount_on_mrp
-        isDiscount = true;
+        isDiscount = discount != 0;
         amount = double.tryParse(cart.price) ?? 0.00;
       }
 
@@ -447,10 +447,10 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
 
     return Container(
       padding: EdgeInsets.all(12),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
           color: Colors.blue.shade300,
-          border: new Border.all(color: Colors.grey.shade50, width: 1),
-          borderRadius: new BorderRadius.circular(12.0)),
+          border: Border.all(color: Colors.grey.shade50, width: 1),
+          borderRadius: BorderRadius.circular(12.0)),
       width: MediaQuery.of(context).size.width,
       child: Column(children: variantWidgets),
     );

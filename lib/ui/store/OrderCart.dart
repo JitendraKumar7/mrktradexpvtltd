@@ -14,17 +14,6 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
     initCart();
   }
 
-  void goAllProduct() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => ProductSearchScreen(
-          isBack: true,
-        ),
-      ),
-    ).then((value) => initCart());
-  }
-
   void initCart() async {
     String key = AppConstants.USER_CART_DATA;
     String value = await AppPreferences.getString(key);
@@ -37,19 +26,116 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
         }
       });
     }
+  }
 
-    /* AppPreferences.getString(AppConstants.USER_CART_DATA).then((value) =>
-    {
-      if (value != null)
-        {
-          setState(() {
-            cartSummery = List<CartSummery>();
-            for (Map json in jsonDecode(value)) {
-              cartSummery.add(CartSummery.fromJson(json));
-            }
-          })
-        }
-    });*/
+  void goAllProduct() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => ProductSearchScreen(
+          isBack: true,
+        ),
+      ),
+    );
+    initCart();
+  }
+
+  void getNotepadForm() async {
+    final _amount = TextEditingController();
+    final _name = TextEditingController();
+    final _gst = TextEditingController();
+    final image = 'https://via.placeholder.com/300.png/fff/09f/?text=empty';
+    AwesomeDialog(
+      context: context,
+      animType: AnimType.SCALE,
+      dismissOnTouchOutside: false,
+      dialogType: DialogType.NO_HEADER,
+      body: Container(
+        color: Colors.white,
+        padding: EdgeInsets.all(12),
+        width: MediaQuery.of(context).size.width,
+        child: Column(children: <Widget>[
+          Center(
+            child: Text(
+              'ITEM INFO',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          TextFormField(
+            autofocus: false,
+            controller: _name,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              filled: true,
+              hintText: 'Item Name *',
+              fillColor: Colors.white,
+              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          TextFormField(
+            autofocus: false,
+            controller: _gst,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              filled: true,
+              hintText: 'GST%',
+              fillColor: Colors.white,
+              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          TextFormField(
+            autofocus: false,
+            controller: _amount,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              filled: true,
+              hintText: 'Price *',
+              fillColor: Colors.white,
+              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+          )
+        ]),
+      ),
+      btnCancelOnPress: () {},
+      btnOkText: 'Add Item',
+      btnOkOnPress: () {
+        setState(() {
+          cartSummery.add(
+            CartSummery(
+              cartSummery?.length ?? 0 + 1,
+              '',
+              image,
+              _amount.text,
+              _gst.text,
+              _name.text,
+              '',
+              '',
+              '',
+              '',
+              '0',
+              '0',
+              '0',
+            ),
+          );
+        });
+      },
+    ).show();
   }
 
   @override
@@ -68,10 +154,15 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
               Icons.add_shopping_cart,
               color: Colors.white,
             ),
-            onPressed: () {
-              goAllProduct();
-            },
-          )
+            onPressed: goAllProduct,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.note_add,
+              color: Colors.white,
+            ),
+            onPressed: getNotepadForm,
+          ),
         ],
       ),
       body: Column(children: <Widget>[
@@ -80,9 +171,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
               ? Center(
                   child: IconButton(
                     icon: Icon(Icons.add_shopping_cart),
-                    onPressed: () {
-                      goAllProduct();
-                    },
+                    onPressed: goAllProduct,
                   ),
                 )
               : ListView.builder(
@@ -90,7 +179,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                   itemBuilder: (BuildContext context, int index) {
                     CartSummery item = cartSummery[index];
                     return Card(
-                      elevation: 8.0,
+                      elevation: 8,
                       child: Row(children: <Widget>[
                         FadeInImage.assetNetwork(
                           image: item.image,

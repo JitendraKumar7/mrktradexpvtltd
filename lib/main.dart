@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info/device_info.dart';
@@ -45,7 +47,7 @@ Future<void> _showNotification(int id, Map<String, dynamic> message) async {
 }
 
 Future<dynamic> onBackgroundMessageHandler(Map<String, dynamic> message) async {
-  _showNotification(3, message);
+  _showNotification(Random().nextInt(100), message);
   print('onBackgroundMessage: $message');
   return Future<void>.value();
 }
