@@ -14,12 +14,6 @@ final navigatorKey = GlobalKey<NavigatorState>();
 final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _showNotification(int id, Map message) async {
-  // Show a notification after every 15 minute with the first
-  // appearance happening a minute after invoking the method
-
-  /*final MethodChannel platform =
-      MethodChannel('crossingthestreams.io/resourceResolver');
-  String alarmUri = await platform.invokeMethod('getAlarmUri');*/
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
     'mrktradexpvtltd1', 'mrk tradex', 'mrk tradex pvt ltd',
     //sound: RawResourceAndroidNotificationSound('slow_spring_board'),
