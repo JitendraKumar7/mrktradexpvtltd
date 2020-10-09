@@ -127,6 +127,13 @@ class ApiClient extends AppConstants {
     return await getInstance().post('getAllKonnectItem', data: params);
   }
 
+  Future<Response<Map>> getNotepadForm() async {
+    Map params = Map<String, dynamic>();
+    params['konnect_id'] = konnectId;
+    params['user_id'] = userId;
+    return await getInstance().post('getNotepadForm', data: params);
+  }
+
   Future<Response<Map>> checkPartyPermission() async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;

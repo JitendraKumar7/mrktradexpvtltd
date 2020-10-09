@@ -269,10 +269,10 @@ class _CategoryState extends State<CategoryScreen> {
             )
           : SizedBox(height: 0),
       StaggeredGridView.countBuilder(
+        shrinkWrap: true,
         crossAxisCount: 2,
         mainAxisSpacing: 1,
         crossAxisSpacing: 1,
-        shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         itemCount: _category.length,
         staggeredTileBuilder: (int index) =>
@@ -292,26 +292,28 @@ class _CategoryState extends State<CategoryScreen> {
                 (value) => onBackPressed(),
               );
             },
-            child: Column(children: <Widget>[
-              SizedBox(height: 20),
-              FadeInImage.assetNetwork(
-                placeholder: 'images/iv_empty.png',
-                image: _category[index]['image'],
-                fit: BoxFit.contain,
-                height: 60,
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(6, 12, 6, 18),
-                child: Text(
-                  _category[index]['category'],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.bold),
-                ),
-              )
-            ]),
+            child: Column(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  FadeInImage.assetNetwork(
+                    placeholder: 'images/iv_empty.png',
+                    image: _category[index]['image'],
+                    fit: BoxFit.contain,
+                    height: 60,
+                  ),
+                  Container(
+                    height: 80,
+                    padding: EdgeInsets.fromLTRB(6, 12, 6, 18),
+                    child: Text(
+                      _category[index]['category'],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )
+                ]),
           ),
           elevation: 3.0,
         ),

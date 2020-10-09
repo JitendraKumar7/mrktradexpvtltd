@@ -1,11 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'ui/base/libraryExport.dart';
 import 'dart:async';
+import 'dart:math';
 import 'dart:io';
 import 'dart:ui';
 
@@ -14,7 +13,7 @@ var appLaunch;
 final navigatorKey = GlobalKey<NavigatorState>();
 final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
-Future<void> _showNotification(int id, Map<String, dynamic> message) async {
+Future<void> _showNotification(int id, Map message) async {
   // Show a notification after every 15 minute with the first
   // appearance happening a minute after invoking the method
 
@@ -46,7 +45,7 @@ Future<void> _showNotification(int id, Map<String, dynamic> message) async {
   );
 }
 
-Future<dynamic> onBackgroundMessageHandler(Map<String, dynamic> message) async {
+Future<dynamic> onBackgroundMessageHandler(Map message) async {
   _showNotification(Random().nextInt(100), message);
   print('onBackgroundMessage: $message');
   return Future<void>.value();

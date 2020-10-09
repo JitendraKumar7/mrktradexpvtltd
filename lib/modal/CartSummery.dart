@@ -15,6 +15,7 @@ class CartSummery {
   String extraParams;
 
   String price;
+  String quantity;
   String discount;
   String discountOn;
 
@@ -30,12 +31,16 @@ class CartSummery {
       this.checkStock,
       this.extraParams,
       this.price,
+      this.quantity,
       this.discount,
-      this.discountOn);
+      this.discountOn) {
+    this.controller.text = quantity ?? '1';
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['price'] = this.price;
+    data['quantity'] = this.quantity;
     data['discount'] = this.discount;
     data['discountOn'] = this.discountOn;
     data['extraParams'] = this.extraParams;
@@ -53,6 +58,7 @@ class CartSummery {
 
   CartSummery.fromJson(Map<String, dynamic> json) {
     price = json['price'];
+    quantity = json['quantity'];
     discount = json['discount'];
     discountOn = json['discountOn'];
     extraParams = json['extraParams'];
@@ -65,6 +71,8 @@ class CartSummery {
     image = json['image'];
     unit = json['unit'];
     id = json['id'];
+
+    controller.text = json['quantity'];
   }
 
   CartSummery.fromProductDetails(ProductDetails details) {
@@ -83,6 +91,7 @@ class CartSummery {
     id = details.id;
 
     extraParams = '';
+
   }
 
   TextEditingController controller = TextEditingController(text: '1');

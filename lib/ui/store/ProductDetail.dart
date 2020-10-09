@@ -436,6 +436,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     _productDetails.checkStock,
                     item.paramsOne + ' ' + item.paramsTwo,
                     _productDetails.price,
+                    '1',
                     _productDetails.discount,
                     _productDetails.discountOn,
                   ),
