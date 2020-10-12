@@ -31,7 +31,7 @@ Future<void> _showNotification(Map message) async {
     iOS: iOSPlatformChannelSpecifics,
   );
   await notificationsPlugin.show(
-    Random().nextInt(4294967296),
+    Random().nextInt(2147483647),
     '${message['data']['title']}',
     message['data']['body'],
     platformChannelSpecifics,
