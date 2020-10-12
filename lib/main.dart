@@ -13,7 +13,7 @@ var appLaunch;
 final navigatorKey = GlobalKey<NavigatorState>();
 final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
-Future<void> _showNotification(int id, Map message) async {
+Future<void> _showNotification(Map message) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
     'mrktradexpvtltd1', 'mrk tradex', 'mrk tradex pvt ltd',
     //sound: RawResourceAndroidNotificationSound('slow_spring_board'),
@@ -31,7 +31,7 @@ Future<void> _showNotification(int id, Map message) async {
     iOS: iOSPlatformChannelSpecifics,
   );
   await notificationsPlugin.show(
-    id,
+    Random().nextInt(9999999999),
     '${message['data']['title']}',
     message['data']['body'],
     platformChannelSpecifics,
@@ -40,8 +40,8 @@ Future<void> _showNotification(int id, Map message) async {
 }
 
 Future<dynamic> onBackgroundMessageHandler(Map message) async {
-  _showNotification(Random().nextInt(100), message);
   print('onBackgroundMessage: $message');
+  _showNotification(message);
   return Future<void>.value();
 }
 
@@ -57,7 +57,7 @@ class NotificationHandler {
 
   Future<void> initialise() async {
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
@@ -75,17 +75,17 @@ class NotificationHandler {
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-        _showNotification(0, message);
-        print('onMessage: $message');
+        print('onMessage : $message');
+        _showNotification(message);
       },
       onBackgroundMessage: Platform.isIOS ? null : onBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
-        _showNotification(2, message);
-        print('onLaunch: $message');
+        print('onLaunch : $message');
+        _showNotification(message);
       },
       onResume: (Map<String, dynamic> message) async {
-        _showNotification(3, message);
-        print('onResume: $message');
+        print('onResume : $message');
+        _showNotification(message);
       },
     );
   }
@@ -187,7 +187,7 @@ class _SplashScreenState extends State<SplashScreen> {
             MaterialPageRoute(
               builder: (context) => InAppWebViewPage(url: url),
             ),
-            (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
           );
         }
         // url is empty
@@ -240,7 +240,7 @@ class _SplashScreenState extends State<SplashScreen> {
             MaterialPageRoute(
               builder: getBuilder(login, details),
             ),
-            (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
           );
         }
         // log out admin
@@ -291,19 +291,19 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       body: widget.splash
           ? Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('images/splash_screen.jpg'),
-                    fit: BoxFit.cover),
-              ),
-            )
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('images/splash_screen.jpg'),
+              fit: BoxFit.cover),
+        ),
+      )
           : Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Center(
-                child: GFLoader(loaderColorOne: Colors.white),
-              ),
-            ),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Center(
+          child: GFLoader(loaderColorOne: Colors.white),
+        ),
+      ),
     );
   }
 
@@ -317,7 +317,7 @@ class _SplashScreenState extends State<SplashScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => DashboardScreen(details),
       ),
-      (Route<dynamic> route) => false,
+          (Route<dynamic> route) => false,
     );
   }
 

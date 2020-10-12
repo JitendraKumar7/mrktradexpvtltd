@@ -45,12 +45,34 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => ProductSearchScreen(
-          isBack: true,
-        ),
+        builder: (BuildContext context) =>
+            ProductSearchScreen(
+              isBack: true,
+            ),
       ),
     );
     initCart();
+  }
+
+  void itemRemoved(CartSummery item) {
+    AwesomeDialog(
+        title: 'Remove',
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        desc: 'Are you sure, you want to remove',
+        btnCancelOnPress: () {
+          print('Cancel On Pressed');
+        },
+        btnOkOnPress: () {
+          setState(() {
+            cartSummery.removeWhere((itemToCheck) => itemToCheck.id == item.id);
+            String key = AppConstants.USER_CART_DATA;
+            AppPreferences.setString(key, jsonEncode(cartSummery));
+            print(jsonEncode(cartSummery));
+            print('Item Removed');
+          });
+        }).show();
   }
 
   @override
@@ -91,140 +113,101 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
         Expanded(
           child: cartSummery.length == 0
               ? Center(
-                  child: IconButton(
-                    icon: Icon(Icons.add_shopping_cart),
-                    onPressed: goAllProduct,
-                  ),
-                )
+            child: IconButton(
+              icon: Icon(Icons.add_shopping_cart),
+              onPressed: goAllProduct,
+            ),
+          )
               : ListView.builder(
-                  itemCount: cartSummery.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    CartSummery item = cartSummery[index];
-                    return Card(
-                      elevation: 8,
-                      child: Row(children: <Widget>[
-                        FadeInImage.assetNetwork(
-                          image: item.image,
-                          placeholder: 'images/iv_empty.png',
-                          height: 60,
-                          width: 60,
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Row(children: <Widget>[
-                                Expanded(
-                                  child: Text(
-                                    item.product + ' - ' + item.extraParams,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.remove_shopping_cart,
-                                      color: Colors.deepOrange),
-                                  onPressed: () {
-                                    AwesomeDialog(
-                                        title: 'Remove',
-                                        context: context,
-                                        dialogType: DialogType.ERROR,
-                                        animType: AnimType.BOTTOMSLIDE,
-                                        desc:
-                                            'Are you sure, you want to remove',
-                                        btnCancelOnPress: () {
-                                          print('Cancel On Pressed');
-                                        },
-                                        btnOkOnPress: () {
-                                          setState(() {
-                                            cartSummery.removeWhere(
-                                                (itemToCheck) =>
-                                                    itemToCheck.id == item.id);
-                                            String key =
-                                                AppConstants.USER_CART_DATA;
-                                            AppPreferences.setString(
-                                                key, jsonEncode(cartSummery));
-                                            print(jsonEncode(cartSummery));
-                                            print('Item Removed');
-                                          });
-                                        }).show();
-                                  },
-                                ),
-                              ]),
-                              Row(children: <Widget>[
-                                Text(
-                                  '₹ ${cartSummery[index].amount}/-',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(width: 20),
-                                IconButton(
-                                  icon: Icon(Icons.remove_circle_outline),
-                                  onPressed: () {
-                                    String value = item.controller.text;
-                                    if (int.tryParse(value) > 1) {
-                                      item.controller.text =
-                                          (int.tryParse(value) - 1).toString();
-                                      item.quantity = item.controller.text;
-                                    }
-                                  },
-                                ),
-                                Expanded(
-                                  child: TextFormField(
-                                    maxLines: 1,
-                                    controller: item.controller,
-                                    keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.done,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.add_circle_outline),
-                                  onPressed: () {
-                                    int value =
-                                        int.tryParse(item.controller.text) ?? 0;
-                                    item.controller.text =
-                                        (value + 1).toString();
-                                    item.quantity = item.controller.text;
-
-                                    //int stock = int.tryParse(item.stock) ?? 0;
-                                    /*if (item.checkStock == '0') {
-                                      item.controller.text = value.toString();
-                                    }
-                                    //
-                                    else if (stock >= value) {
-                                      item.controller.text = value.toString();
-                                    }
-                                    //
-                                    else {
-                                      AwesomeDialog(
-                                              title: 'Overflow',
-                                              context: context,
-                                              desc:
-                                                  'Only $stock items in stock',
-                                              headerAnimationLoop: false,
-                                              animType: AnimType.TOPSLIDE,
-                                              dialogType: DialogType.WARNING,
-                                              btnOkOnPress: () {})
-                                          .show();
-                                    }*/
-                                  },
-                                ),
-                              ]),
-                            ],
+            itemCount: cartSummery.length,
+            itemBuilder: (BuildContext context, int index) {
+              CartSummery item = cartSummery[index];
+              item.controller.addListener(() {
+                item.quantity = item.controller.text;
+                print('Quantity ${item.quantity}');
+              });
+              return Card(
+                elevation: 8,
+                child: Row(children: <Widget>[
+                  FadeInImage.assetNetwork(
+                    image: item.image,
+                    placeholder: 'images/iv_empty.png',
+                    height: 60,
+                    width: 60,
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Row(children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              item.product + ' - ' + item.extraParams,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                      ]),
-                    );
-                  },
-                ),
+                          IconButton(
+                            icon: Icon(Icons.remove_shopping_cart,
+                                color: Colors.deepOrange),
+                            onPressed: () {
+                              itemRemoved(item);
+                            },
+                          ),
+                        ]),
+                        Row(children: <Widget>[
+                          Text(
+                            '₹ ${cartSummery[index].amount}/-',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(width: 20),
+                          IconButton(
+                            icon: Icon(Icons.remove_circle_outline),
+                            onPressed: () {
+                              int value =
+                                  int.tryParse(item.controller.text) ?? 0;
+                              item.controller.text =
+                                  (value > 1 ? value - 1 : value)
+                                      .toString();
+                            },
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              maxLines: 1,
+                              controller: item.controller,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.add_circle_outline),
+                            onPressed: () {
+                              int value =
+                                  int.tryParse(item.controller.text) ?? 0;
+                              item.controller.text =
+                                  (value + 1).toString();
+                            },
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                ]),
+              );
+            },
+          ),
         ),
         MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
+          minWidth: MediaQuery
+              .of(context)
+              .size
+              .width,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(1),
           ),
@@ -240,19 +223,19 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
               );
             } else {
               AwesomeDialog(
-                      title: 'Empty',
-                      context: context,
-                      desc: 'your cart is empty',
-                      headerAnimationLoop: false,
-                      animType: AnimType.TOPSLIDE,
-                      dialogType: DialogType.WARNING,
-                      btnOkOnPress: () {})
+                  title: 'Empty',
+                  context: context,
+                  desc: 'your cart is empty',
+                  headerAnimationLoop: false,
+                  animType: AnimType.TOPSLIDE,
+                  dialogType: DialogType.WARNING,
+                  btnOkOnPress: () {})
                   .show();
             }
           },
           color: Colors.lightBlueAccent,
           child: Text(
-            'ORDER SUMMARY',
+            ' ORDER SUMMARY ',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -294,7 +277,10 @@ class _NotepadDefaultFormState extends State<NotepadDefaultForm> {
       body: Container(
         color: Colors.white,
         padding: EdgeInsets.all(12),
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         child: Column(children: <Widget>[
           Center(
             child: Text(
@@ -406,102 +392,105 @@ class _NotepadDefaultFormState extends State<NotepadDefaultForm> {
         Expanded(
           child: cartSummery.length == 0
               ? Center(
-                  child: IconButton(
-                    icon: Icon(Icons.add_shopping_cart),
-                    onPressed: getNotepadForm,
-                  ),
-                )
+            child: IconButton(
+              icon: Icon(Icons.add_shopping_cart),
+              onPressed: getNotepadForm,
+            ),
+          )
               : ListView.builder(
-                  itemCount: cartSummery.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    CartSummery item = cartSummery[index];
-                    return Card(
-                      elevation: 8,
-                      child: Row(children: <Widget>[
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Row(children: <Widget>[
-                                SizedBox(width: 20),
-                                Expanded(
-                                  child: Text(
-                                    item.product,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.remove_shopping_cart,
-                                      color: Colors.deepOrange),
-                                  onPressed: () {
-                                    AwesomeDialog(
-                                        title: 'Remove',
-                                        context: context,
-                                        dialogType: DialogType.ERROR,
-                                        animType: AnimType.BOTTOMSLIDE,
-                                        desc:
-                                            'Are you sure, you want to remove',
-                                        btnCancelOnPress: () {
-                                          print('Cancel On Pressed');
-                                        },
-                                        btnOkOnPress: () {
-                                          setState(() {
-                                            cartSummery.removeWhere(
-                                                (itemToCheck) =>
-                                                    itemToCheck.id == item.id);
-                                            String key =
-                                                AppConstants.USER_CART_DATA;
-                                            AppPreferences.setString(
-                                                key, jsonEncode(cartSummery));
-                                            print(jsonEncode(cartSummery));
-                                            print('Item Removed');
-                                          });
-                                        }).show();
-                                  },
-                                ),
-                              ]),
-                              Row(children: <Widget>[
-                                SizedBox(width: 120),
-                                IconButton(
-                                  icon: Icon(Icons.remove_circle_outline),
-                                  onPressed: () {
-                                    String value = item.controller.text;
-                                    if (int.tryParse(value) > 1) {
-                                      item.controller.text =
-                                          (int.tryParse(value) - 1).toString();
-                                    }
-                                  },
-                                ),
-                                Expanded(
-                                  child: TextFormField(
-                                    maxLines: 1,
-                                    controller: item.controller,
-                                    keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.done,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.add_circle_outline),
-                                  onPressed: () {
-                                    int value =
-                                        int.tryParse(item.controller.text) ?? 0;
-                                    item.controller.text =
-                                        (value + 1).toString();
-                                  },
-                                ),
-                              ]),
-                            ],
+            itemCount: cartSummery.length,
+            itemBuilder: (BuildContext context, int index) {
+              CartSummery item = cartSummery[index];
+              return Card(
+                elevation: 8,
+                child: Row(children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Row(children: <Widget>[
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: Text(
+                              item.product,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                      ]),
-                    );
-                  },
-                ),
+                          IconButton(
+                            icon: Icon(Icons.remove_shopping_cart,
+                                color: Colors.deepOrange),
+                            onPressed: () {
+                              AwesomeDialog(
+                                  title: 'Remove',
+                                  context: context,
+                                  dialogType: DialogType.ERROR,
+                                  animType: AnimType.BOTTOMSLIDE,
+                                  desc:
+                                  'Are you sure, you want to remove',
+                                  btnCancelOnPress: () {
+                                    print('Cancel On Pressed');
+                                  },
+                                  btnOkOnPress: () {
+                                    setState(() {
+                                      cartSummery.removeWhere(
+                                              (itemToCheck) =>
+                                          itemToCheck.id == item.id);
+                                      String key =
+                                          AppConstants.USER_CART_DATA;
+                                      AppPreferences.setString(
+                                          key, jsonEncode(cartSummery));
+                                      print(jsonEncode(cartSummery));
+                                      print('Item Removed');
+                                    });
+                                  }).show();
+                            },
+                          ),
+                        ]),
+                        Row(children: <Widget>[
+                          SizedBox(width: 120),
+                          IconButton(
+                            icon: Icon(Icons.remove_circle_outline),
+                            onPressed: () {
+                              String value = item.controller.text;
+                              if (int.tryParse(value) > 1) {
+                                item.controller.text =
+                                    (int.tryParse(value) - 1).toString();
+                              }
+                            },
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              maxLines: 1,
+                              controller: item.controller,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.add_circle_outline),
+                            onPressed: () {
+                              int value =
+                                  int.tryParse(item.controller.text) ?? 0;
+                              item.controller.text =
+                                  (value + 1).toString();
+                            },
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                ]),
+              );
+            },
+          ),
         ),
         MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
+          minWidth: MediaQuery
+              .of(context)
+              .size
+              .width,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(1),
           ),
@@ -521,22 +510,23 @@ class _NotepadDefaultFormState extends State<NotepadDefaultForm> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => NotepadOrderForm(
-                    textField: textField ?? [],
-                  ),
+                  builder: (BuildContext context) =>
+                      NotepadOrderForm(
+                        textField: textField ?? [],
+                      ),
                 ),
               );
             }
             // Error
             else {
               AwesomeDialog(
-                      title: 'Empty',
-                      context: context,
-                      desc: 'your cart is empty',
-                      headerAnimationLoop: false,
-                      animType: AnimType.TOPSLIDE,
-                      dialogType: DialogType.WARNING,
-                      btnOkOnPress: () {})
+                  title: 'Empty',
+                  context: context,
+                  desc: 'your cart is empty',
+                  headerAnimationLoop: false,
+                  animType: AnimType.TOPSLIDE,
+                  dialogType: DialogType.WARNING,
+                  btnOkOnPress: () {})
                   .show();
             }
           },
@@ -612,7 +602,10 @@ class _NotepadOrderFormState extends State<NotepadOrderForm> {
           ),
         ),
         MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
+          minWidth: MediaQuery
+              .of(context)
+              .size
+              .width,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(1),
           ),
@@ -631,19 +624,20 @@ class _NotepadOrderFormState extends State<NotepadOrderForm> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => OrderSummeryScreen(
-                      summery: cartSummery, orderFormData: orderFormData),
+                  builder: (BuildContext context) =>
+                      OrderSummeryScreen(
+                          summery: cartSummery, orderFormData: orderFormData),
                 ),
               );
             } else {
               AwesomeDialog(
-                      title: 'Empty',
-                      context: context,
-                      desc: 'your cart is empty',
-                      headerAnimationLoop: false,
-                      animType: AnimType.TOPSLIDE,
-                      dialogType: DialogType.WARNING,
-                      btnOkOnPress: () {})
+                  title: 'Empty',
+                  context: context,
+                  desc: 'your cart is empty',
+                  headerAnimationLoop: false,
+                  animType: AnimType.TOPSLIDE,
+                  dialogType: DialogType.WARNING,
+                  btnOkOnPress: () {})
                   .show();
             }
           },
