@@ -15,7 +15,7 @@ final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _showNotification(Map message) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-    'mrktradexpvtltd1', 'mrk tradex', 'mrk tradex pvt ltd',
+    'mrktradexpvtltd', 'mrk tradex', 'mrk tradex pvt ltd',
     //sound: RawResourceAndroidNotificationSound('slow_spring_board'),
     importance: Importance.max,
     priority: Priority.high,
@@ -31,7 +31,7 @@ Future<void> _showNotification(Map message) async {
     iOS: iOSPlatformChannelSpecifics,
   );
   await notificationsPlugin.show(
-    Random().nextInt(9999999999),
+    Random().nextInt(4294967296),
     '${message['data']['title']}',
     message['data']['body'],
     platformChannelSpecifics,
