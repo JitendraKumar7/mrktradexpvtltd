@@ -227,6 +227,7 @@ class _SplashScreenState extends State<SplashScreen> {
         String userType = login.userType.toString().split('.').last;
 
         params['serverKey'] = AppConstants.getServerKey;
+        params['platform'] = Platform.operatingSystem;
         params['loginId'] = login.loginId;
         params['userType'] = userType;
         params['fcmToken'] = fcmToken;
