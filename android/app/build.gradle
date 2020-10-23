@@ -46,12 +46,9 @@ android {
     }
 
     defaultConfig {
-        //applicationId "com.mrktradexpvtltd"
         applicationId "com.mrk.tradex"
         minSdkVersion 21
         targetSdkVersion 30
-        /*versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName*/
 
         signingConfig signingConfigs.release
 
@@ -73,5 +70,5 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.google.firebase:firebase-messaging:20.2.4'
+    implementation 'com.google.firebase:firebase-messaging:20.3.0'
 }
