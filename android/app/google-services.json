@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "496603885017",
+    "firebase_url": "https://mrk-tradex-pvt-ltd.firebaseio.com",
+    "project_id": "mrk-tradex-pvt-ltd",
+    "storage_bucket": "mrk-tradex-pvt-ltd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496603885017:android:6bffaba31d56cc0587fdc8",
+        "android_client_info": {
+          "package_name": "com.mrk.tradex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "496603885017-cb9qmp7rgbqbpqrorl6d14bimjjv7j0a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGj84hm_zZzh_4GT7f7pX0IjP9HpPBTQI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "496603885017-cb9qmp7rgbqbpqrorl6d14bimjjv7j0a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "496603885017-r1ojlig2vnodca7u0hr2srkjflmfq42f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.meo.MRKTradexNew"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
