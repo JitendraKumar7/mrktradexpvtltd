@@ -1,4 +1,5 @@
 import 'package:mrktradexpvtltd/ui/admin/AdminLinkUsers.dart';
+import 'package:mrktradexpvtltd/ui/admin/AdminSalesQuotation.dart';
 
 import '../base/libraryExport.dart';
 
@@ -205,6 +206,20 @@ class _AdminDashboardState extends State<AdminDashboardScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => ProductSearchScreen(),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.insert_drive_file_rounded),
+              title: Text('Sales Quotation / Purchase order'),
+              onTap: () async {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => AdminSalesQuotationScreen(),
                   ),
                 );
               },

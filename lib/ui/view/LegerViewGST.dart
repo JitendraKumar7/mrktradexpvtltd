@@ -1,9 +1,12 @@
 
 
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mrktradexpvtltd/Pdfview/Leaderpdf.dart';
+import 'package:mrktradexpvtltd/ui/view/PurchaseInvoiceThrewInvoiceNo.dart';
 
 import '../base/libraryExport.dart';
+import 'SalesInvoiceThrewInvoiceNo.dart';
 
 class LedgerViewGSTScreen extends StatefulWidget {
   final String id;
@@ -40,7 +43,8 @@ class _LedgerViewGSTState extends State<LedgerViewGSTScreen> {
 
           _ledger = response['result'][0];
 
-   Gstno=_ledger['gstno'];
+
+                Gstno=_ledger['gstno'];
 
           List<String> _date = _ledger['date'].cast<String>();
           List<String> _type = _ledger['type'].cast<String>();
@@ -52,19 +56,89 @@ class _LedgerViewGSTState extends State<LedgerViewGSTScreen> {
           List<String> _narration = _ledger['narration'].cast<String>();
           List<String> _count = _ledger['count'].cast<String>();
           //List<String>  _gstno = json['gstno'];
-
           List<DataRow> rows = List<DataRow>();
-          for (var i = 0; i < _date.length + 3; i++) {
+
+
+          for (var i = 0; i < _date.length ; i++) {
             rows.add(
                 DataRow(cells: [
+
                   getDataCell(_date, i),
                   getDataCell(_type, i),
-                  getDataCell(_billno, i),
+                  new DataCell(
+                    Text(
+                      _billno[i],
+                      style: TextStyle(fontSize: 18, color: Colors.blue,fontWeight: FontWeight.bold),
+                    ),
+                  onTap: (){
+                    var details = new Map();
+                    details['gstno'] = Gstno;
+                    details['Invoiceno'] =_billno[i] ;
+                    print(details);
+                    if(_type[i]=='Rcpt'){
+                      ApiAdmin().getPurchaseInvoiceThrewInvoiceNo(_billno[i] ,Gstno).then((value) => {
+                        setState(() {
+                          Map<String, dynamic> response = value.data;
+
+                          if (response['status'] == '200') {
+
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PurchaseInvoiceThrewInvoiceNoViewScreen(id: details,),),
+                            );
+
+
+
+                          }else{   Fluttertoast.showToast(
+                            msg: "No Data Found",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+
+                          );}
+                          print(response);
+                        }),
+                      });
+
+
+                  }
+                    else{
+                      ApiAdmin().getSalesInvoiceThrewInvoiceNo(_billno[i],Gstno).then((value) => {
+                        setState(() {
+                          Map<String, dynamic> response = value.data;
+
+                          if (response['status'] == '200') {
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SalesInvoiceThrewInvoiceNo(id: details),
+                              ),
+                            );
+
+
+
+
+                          }else{   Fluttertoast.showToast(
+                            msg: "No SalesInvoice Found",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+
+                          );}
+                          print(response);
+                        }),
+                      });
+
+                    }
+                    }),
                   getDataCell(_account, i),
                   getDataCell(_debit, i),
                   getDataCell(_credit, i),
                   getDataCell(_balance, i),
-                ]));
+
+                ],
+                )
+
+            );
+
 
             try {
               if (_date[i]?.isNotEmpty ?? false) {
@@ -112,11 +186,26 @@ class _LedgerViewGSTState extends State<LedgerViewGSTScreen> {
         ),
         title: Text('Ledger View'),
       ),
-      body: _ledger == null
+      body:_ledger == null
+          ? Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Center(
+          child: GFLoader(loaderColorOne: Colors.white),
+        ),
+      ): _ledger.isEmpty
           ? Center(
-        child: GFLoader(loaderColorOne: Colors.white),
-      )
-          : SingleChildScrollView(
+        child: Container(
+          alignment: Alignment.center,
+          width: 200,
+          height: 200,
+          child:Center(
+
+            child:Image(image: AssetImage('images/nodatafound.png'),
+            ),
+          ),
+        ),
+      ) : SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: ConstrainedBox(
           constraints: BoxConstraints(minWidth: width),

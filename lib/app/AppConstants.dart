@@ -1,14 +1,27 @@
+import 'package:mrktradexpvtltd/ui/base/libraryExport.dart';
+
 class AppConstants {
-  static const int user_id = 406;
-  static const int konnect_id = 1330;
+  static int appId = 0;
 
-  int get userId => user_id;
+  static setAppId(int id) async {
+    await AppPreferences.setInt(APP_DATA, id);
+    print('app id $id');
+    appId = id;
+  }
 
-  int get konnectId => konnect_id;
+  Future<int> get getAppId async {
+    return await AppPreferences.getInt(APP_DATA);
+  }
 
+  int get userId => appId == 0 ? 406 : 46;
+
+  int get konnectId => appId == 0 ? 1330 : 1834;
+
+  static const String APP_DATA = 'com.meo.konnect.app';
   static const String KONNECT_DATA = 'com.meo.konnect.data';
   static const String USER_CART_DATA = 'com.meo.user.cart.data';
   static const String USER_LOGIN_DATA = 'com.meo.user.login.data';
+
   static const String USER_LOGIN_CREDENTIAL = 'com.meo.user.login.credential';
 
   static const String getServerKey =
@@ -17,6 +30,6 @@ class AppConstants {
   static const String SHARE_APP = 'check out my app \n\n'
       'https://play.google.com/store/apps/details?id=com.mrk.tradex';
 
-  static const String SHARE_STORE = 'check out my online store \n\n'
-      'https://meo.co.in/konnect-link/konnect-new/konnect-newlink.php?konnect_id=$konnect_id#product';
+  static String SHARE_STORE = 'check out my online store \n\n'
+      'https://meo.co.in/konnect-link/konnect-new/konnect-newlink.php?konnect_id=$AppConstants.konnect_id#product';
 }

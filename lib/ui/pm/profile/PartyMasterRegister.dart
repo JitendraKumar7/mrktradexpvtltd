@@ -19,10 +19,13 @@ class _PartyMasterRegisterState extends State<PartyMasterRegisterScreen> {
   TextEditingController _password2 = TextEditingController();
   TextEditingController _gstNumber = TextEditingController();
   bool isGstRequired = false;
-
+  bool _passwordVisible,_passwordVisible1,_passwordVisible2;
   @override
   void initState() {
     super.initState();
+    _passwordVisible=false;
+    _passwordVisible1=false;
+    _passwordVisible2=false;
     ApiClient().checkPartyPermission().then((value) => {
           setState(() {
             Map response = value.data;
@@ -162,13 +165,18 @@ class _PartyMasterRegisterState extends State<PartyMasterRegisterScreen> {
                 SizedBox(height: 24.0),
                 TextFormField(
                   autofocus: false,
-                  obscureText: true,
+                  obscureText: !_passwordVisible2,
                   controller: _password1,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
                     filled: true,
                     hintText: 'Password',
                     fillColor: Colors.white,
+                    suffixIcon: IconButton (icon:Icon(_passwordVisible2?Icons.visibility:Icons.visibility_off,color: Colors.pink,),onPressed: (){
+                      setState(() {
+                        _passwordVisible2=!_passwordVisible2;
+                      });
+                    }, ),
                     prefixIcon: Icon(Icons.lock),
                     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                     border: OutlineInputBorder(
@@ -178,13 +186,19 @@ class _PartyMasterRegisterState extends State<PartyMasterRegisterScreen> {
                 SizedBox(height: 24.0),
                 TextFormField(
                   autofocus: false,
-                  obscureText: true,
+
                   controller: _password2,
+                  obscureText: !_passwordVisible1,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
                     filled: true,
                     hintText: 'Confirm Password',
                     fillColor: Colors.white,
+                    suffixIcon: IconButton (icon:Icon(_passwordVisible1?Icons.visibility:Icons.visibility_off,color: Colors.pink,),onPressed: (){
+                      setState(() {
+                        _passwordVisible1=!_passwordVisible1;
+                      });
+                    }, ),
                     prefixIcon: Icon(Icons.lock),
                     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                     border: OutlineInputBorder(

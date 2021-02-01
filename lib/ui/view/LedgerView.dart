@@ -1,9 +1,12 @@
 
 
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mrktradexpvtltd/Pdfview/Leaderpdf.dart';
 
 import '../base/libraryExport.dart';
+import 'PurchaseInvoiceThrewInvoiceNo.dart';
+import 'SalesInvoiceThrewInvoiceNo.dart';
 
 class LedgerViewScreen extends StatefulWidget {
   final String id;
@@ -19,6 +22,7 @@ class _LedgerViewState extends State<LedgerViewScreen> {
   String _sDate;
   String _eDate;
   Map _ledger;
+  String Gstno;
   KonnectDetails konnectDetails;
   @override
   void initState() {
@@ -37,7 +41,7 @@ class _LedgerViewState extends State<LedgerViewScreen> {
 
             if (response['status'] == '200') {
               _ledger = response['result'][0];
-
+              Gstno=_ledger['gstno'];
               List<String> _date = _ledger['date'].cast<String>();
               List<String> _type = _ledger['type'].cast<String>();
               List<String> _billno = _ledger['billno'].cast<String>();
@@ -50,11 +54,74 @@ class _LedgerViewState extends State<LedgerViewScreen> {
               //List<String>  _gstno = json['gstno'];
 
               List<DataRow> rows = List<DataRow>();
-              for (var i = 0; i < _date.length + 3; i++) {
+              for (var i = 0; i < _date.length ; i++) {
                 rows.add(
                     DataRow(cells: [
                   getDataCell(_date, i),
-                  getDataCell(_type, i),
+                      new DataCell(
+                          Text(
+                            _billno[i],
+                            style: TextStyle(fontSize: 18, color: Colors.blue,fontWeight: FontWeight.bold),
+                          ),
+                          onTap: (){
+                            var details = new Map();
+                            details['gstno'] = Gstno;
+                            details['Invoiceno'] =_billno[i] ;
+                            print(details);
+                            if(_type[i]=='Rcpt'){
+                              ApiAdmin().getPurchaseInvoiceThrewInvoiceNo(_billno[i] ,Gstno).then((value) => {
+                                setState(() {
+                                  Map<String, dynamic> response = value.data;
+
+                                  if (response['status'] == '200') {
+
+                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PurchaseInvoiceThrewInvoiceNoViewScreen(id: details,),),
+                                    );
+
+
+
+                                  }else{   Fluttertoast.showToast(
+                                    msg: "No Data Found",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+
+                                  );}
+                                  print(response);
+                                }),
+                              });
+
+
+                            }
+                            else{
+                              ApiAdmin().getSalesInvoiceThrewInvoiceNo(_billno[i],Gstno).then((value) => {
+                                setState(() {
+                                  Map<String, dynamic> response = value.data;
+
+                                  if (response['status'] == '200') {
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            SalesInvoiceThrewInvoiceNo(id: details),
+                                      ),
+                                    );
+
+
+
+
+                                  }else{   Fluttertoast.showToast(
+                                    msg: "No SalesInvoice Found",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+
+                                  );}
+                                  print(response);
+                                }),
+                              });
+
+                            }
+                          }),
                   getDataCell(_billno, i),
                   getDataCell(_account, i),
                   getDataCell(_debit, i),

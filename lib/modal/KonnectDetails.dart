@@ -290,6 +290,7 @@ class WhatsAppTemplate {
 class BasicInfo {
   String _name;
   String _email;
+  String _cardType;
   String _designation;
   String _konnectLogo;
   String _mobileNumber;
@@ -299,7 +300,7 @@ class BasicInfo {
   String _categoryOfBusiness;
 
   String get name => _name;
-
+  String get cardtype => _cardType;
   String get natureOfBusiness => _natureOfBusiness;
 
   String get categoryOfBusiness => _categoryOfBusiness;
@@ -323,6 +324,7 @@ class BasicInfo {
     _otherDescription = json['other_description'];
     _designation = json['designation'];
     _email = json['email'];
+    _cardType=json['cardType'];
     _organisationName = json['organisation_name'];
     _mobileNumber = json['mobile_number'];
     _konnectLogo = json['konnect_logo'];
@@ -336,6 +338,7 @@ class BasicInfo {
     data['other_description'] = this._otherDescription;
     data['designation'] = this._designation;
     data['email'] = this._email;
+    data['cardType']=this._cardType;
     data['organisation_name'] = this._organisationName;
     data['mobile_number'] = this._mobileNumber;
     data['konnect_logo'] = this._konnectLogo;

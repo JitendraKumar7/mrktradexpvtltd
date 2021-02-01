@@ -1,3 +1,5 @@
+import 'package:mrktradexpvtltd/ui/AdminLinkView/AdminLinkActivityView.dart';
+
 import '../base/libraryExport.dart';
 
 
@@ -21,8 +23,8 @@ class _AdminLinkActivityState extends State<AdminLinkActivityScreen> {
   void initState() {
     super.initState();
     String LinkuserID=widget.id['userid'].toString();
-    String LinkuserKntID= widget.id['Konnectid'].toString();
-    ApiAdmin().getPartyDetails(LinkuserKntID,LinkuserID).then((value) => {
+
+    ApiAdmin(). getkompassProActivityDetails(LinkuserID).then((value) => {
       setState(() {
         Map<String, dynamic> response = value.data;
 
@@ -38,7 +40,7 @@ class _AdminLinkActivityState extends State<AdminLinkActivityScreen> {
       }),
     });
   }
-  Widget appBarTitle = new Text(" Link User Party Master");
+  Widget appBarTitle = new Text(" Activitys");
   Icon actionIcon = new Icon(Icons.search);
   onChanged(String value) {
     _list= List<Map>();
@@ -116,17 +118,28 @@ class _AdminLinkActivityState extends State<AdminLinkActivityScreen> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: Center(
-                child: Text(
-                  'Empty',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                heightFactor:  MediaQuery.of(context).size.height-0,
+                widthFactor:   MediaQuery.of(context).size.width-0,
+                child:Image(image: AssetImage('images/nodatafound.png'),
                 ),
               ),
             )
                 :ListView(
                 children: _list.map((item) {
+                  Map profile;
+                  profile = Map();
+
+                  profile['userid'] = item['user_id'];
+                  profile['Konnectid'] = item['link_user_konnect_id'];
+                  profile['Firstname'] = item['first_name'];
+                  profile['Email'] = item['email'];
+                  profile['phnno'] = item['phonenumber'];
+                  profile['password'] = item['password'];
+                  profile['Image'] = item['image'];
+
+                  print(item['email']);
+
+
                   return Column(
                     children: <Widget>[
                       ListTile(
@@ -135,17 +148,37 @@ class _AdminLinkActivityState extends State<AdminLinkActivityScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  AdminLinkPartyMasterViewScreen (id: item['master_id']),
+                                  AdminLinkActivityViewScreen (id:  profile),
                             ),
                           );
                         },
                         title: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                              item['Name'] ?? 'Name Error',style: (TextStyle(color:Colors.black,fontWeight: FontWeight.bold,fontSize: 16))
+                          padding: EdgeInsets.all(3),
+                          child: Text(item['customer_name'].toString().toUpperCase() ?? 'Name Error',style: (TextStyle(color:Colors.black,fontWeight: FontWeight.bold,fontSize: 16))
                           ),
                         ),
+
                       ),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 22,vertical: 4),child:Row( crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          Expanded(child: InkWell(
+                            child:Row(children: [   Icon(Icons.location_on,color: Colors.redAccent,),Text(
+                              item['poa'],
+                              style: (TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.indigoAccent,
+                                  fontWeight: FontWeight.bold)),
+                            ),],),
+
+
+                          )),
+                          Text(
+                            item['date_time'].toString().toUpperCase(),
+                            style: (TextStyle(fontSize: 12)),
+                          ),
+
+                        ],),),
                       Divider(),
                     ],
                   );

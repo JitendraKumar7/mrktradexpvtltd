@@ -262,10 +262,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               Text(
                 _productDetails.name == _productDetails.printName
                     ? _productDetails.printName
-                    : '${_productDetails.printName} (${_productDetails.name})',
+                    : '${_productDetails.printName} ${_productDetails.name}',
                 style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
+                    fontSize:
+                    20,
+                    color: Colors.lightBlue,
                     fontWeight: FontWeight.bold),
               ),
               Divider(color: Colors.white),

@@ -1,3 +1,8 @@
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
+import 'package:toggle_switch/toggle_switch.dart';
+import 'package:upgrader/upgrader.dart';
+
+import '../Animated.dart';
 import './base/libraryExport.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -9,14 +14,28 @@ class DashboardScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
   List<CartSummery> cart = List<CartSummery>();
   bool isLoginRequired = false;
+  AnimationController _animationController;
+  bool isDarkMode = false;
+  var mrk=1;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
+
+
+ // AppConstants appConstants =new AppConstants();
+
 
   @override
   void initState() {
+  
     super.initState();
-
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
     checkPermission();
   }
 
@@ -98,13 +117,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Upgrader().clearSavedSettings();
     BasicInfo basicInfo = widget.konnectDetails.basicInfo;
+    print('Basic card deatail $basicInfo');
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 246, 246, 246),
       appBar: AppBar(
         title: Text('नमस्कार / welcome'),
         actions: <Widget>[
-          getCart(basicInfo),
+          basicInfo.cardtype=="ecommerce"?getCart(basicInfo):Container(),
           IconButton(
               icon: Icon(
                 Icons.share,
@@ -115,7 +137,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               }),
         ],
       ),
-      body: Column(
+      body:  UpgradeAlert(
+        debugLogging: false,
+        child:
+
+
+
+
+      Column(
         children: <Widget>[
           Expanded(
             flex: 5,
@@ -178,7 +207,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                   ),
-                  Positioned.fill(
+
+                  basicInfo.cardtype=="ecommerce"?Positioned.fill(
                     right: 10.0,
                     bottom: 50.0,
                     child: Align(
@@ -199,7 +229,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         text: 'Login',
                       ),
                     ),
-                  ),
+                  ):Container(),
                 ],
               ),
             ),
@@ -263,6 +293,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: <Widget>[
                   DashboardButton(
                       onPressed: () {
+                        basicInfo.cardtype=="ecommerce"?
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -270,10 +301,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ? PartyMasterMobileScreen(
                                       logo: basicInfo.konnectLogo)
                                   : CategoryScreen()),
+                        ): Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => isLoginRequired
+                                  ? PartyMasterMobileScreen(
+                                  logo: basicInfo.konnectLogo)
+                                  : ProductcopScreen()),
                         );
                       },
                       asset: 'images/home/ic_store.png',
-                      label: 'Store'),
+                      label:  basicInfo.cardtype=="ecommerce"?'Store':'Products'),
                   VerticalDivider(color: Colors.black87),
                   DashboardButton(
                       onPressed: () {
@@ -349,31 +387,73 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
           ),
-          GFButton(
-            size: 50,
-            fullWidthButton: true,
-            type: GFButtonType.solid,
-            color: Colors.blue.shade300,
-            onPressed: () {
-              AwesomeDialog(
-                context: context,
-                dialogType: DialogType.INFO,
-                animType: AnimType.RIGHSLIDE,
-                headerAnimationLoop: false,
-                title: 'Required',
-                desc: 'Required',
-                body: Text('Please login to use this service'),
-                btnCancelOnPress: () {},
-              ).show();
-            },
-            icon: Icon(
-              Icons.video_call,
-              color: Colors.white,
-            ),
-            text: '',
+
+          Row(
+            children: [
+// Here, default theme colors are used for activeBgColor, activeFgColor, inactiveBgColor and inactiveFgColor
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: ToggleSwitch(
+
+                  inactiveBgColor: Colors.grey[200],
+                  initialLabelIndex: AppConstants.appId,
+                  labels: ['MRK', 'MAYA', ],
+                  onToggle: (index) {
+                    if(index==0){
+                      AppConstants.setAppId(0);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => SplashScreen(),
+                        ),
+                      );
+                    }
+                    else{
+                      AppConstants.setAppId(1);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => SplashScreen(),
+                        ),
+                      );
+                    }
+                    print('switched to: $index');
+                  },
+                ),
+              ),
+
+              basicInfo.cardtype=="ecommerce"?Expanded(child:
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: GFButton(
+size: 40,
+
+                  type: GFButtonType.solid,
+                  color: Colors.blue,
+                  onPressed: () {
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.INFO,
+                      animType: AnimType.RIGHSLIDE,
+                      headerAnimationLoop: false,
+                      title: 'Required',
+                      desc: 'Required',
+                      body: Text('Please login to use this service'),
+                      btnCancelOnPress: () {},
+                    ).show();
+                  },
+                  icon: Icon(
+                    Icons.video_call,
+                    color: Colors.white,
+                  ),
+                  text: '',
+                ),
+              ),):Container(),
+
+            ],
           ),
         ],
       ),
-    );
+      ));
   }
 }

@@ -66,7 +66,7 @@ class _SupportScreenState extends State<SupportScreen> {
     children.add(
       Visibility(
         visible: visible,
-        child: InkWell(
+        child: _basicInfo.cardtype=="ecommerce"? InkWell(
           onTap: () {
             Navigator.push(
               context,
@@ -89,7 +89,7 @@ class _SupportScreenState extends State<SupportScreen> {
               ),
             ),
           ),
-        ),
+        ):Container(),
       ),
     );
 

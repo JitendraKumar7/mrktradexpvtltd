@@ -3,7 +3,7 @@ description: A new Flutter application.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.7+8
+version: 1.0.8+12
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -11,9 +11,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  package_info: ^0.4.3+2
+  upgrader: ^2.8.2
   group_radio_button: ^1.0.1
   font_awesome_flutter: ^8.8.1
+  modal_bottom_sheet: ^1.0.0+1
+  toggle_switch: "^0.1.8"
   fluttertoast: ^7.0.2
+  lite_rolling_switch: ^0.1.1
   custom_radio_grouped_button: ^1.0.6+1
   syncfusion_flutter_pdfviewer: ^18.4.30-beta
   syncfusion_flutter_pdf: ^18.4.30-beta
@@ -38,12 +43,14 @@ dependencies:
   progress_dialog: ^1.2.4
   cupertino_icons: ^1.0.0
   firebase_messaging: ^7.0.3
+  firebase_core: ^0.5.0+1
   shared_preferences: ^0.5.12+2
   permission_handler: ^5.0.1+1
   flutter_inappwebview: ^4.0.0+4
   youtube_player_flutter: ^7.0.0+7
   flutter_staggered_grid_view: ^0.3.2
   flutter_local_notifications: ^3.0.0
+  table_calendar: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +60,7 @@ flutter:
   uses-material-design: true
   assets:
     - images/iv_empty.png
+    - images/nodatafound.png
     - images/ic_konnect.png
     - images/splash_back.png
     - images/splash_screen.jpg

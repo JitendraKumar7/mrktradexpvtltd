@@ -14,11 +14,11 @@ class PartyMasterLoginScreen extends StatefulWidget {
 class _PartyMasterLoginState extends State<PartyMasterLoginScreen> {
   TextEditingController _loginId = TextEditingController();
   TextEditingController _password = TextEditingController();
-
+bool passwrdv;
   @override
   void initState() {
     super.initState();
-
+passwrdv=false;
     _loginId.text = widget.loginId;
   }
 
@@ -69,10 +69,15 @@ class _PartyMasterLoginState extends State<PartyMasterLoginScreen> {
               SizedBox(height: 48.0),
               TextFormField(
                 autofocus: true,
-                obscureText: true,
+                obscureText:!passwrdv,
                 controller: _password,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
+                  suffixIcon: IconButton (icon:Icon(passwrdv?Icons.visibility:Icons.visibility_off,color: Colors.pink,),onPressed: (){
+                    setState(() {
+                      passwrdv=!passwrdv;
+                    });
+                  }, ),
                   filled: true,
                   fillColor: Colors.white,
                   hintText: 'Password',

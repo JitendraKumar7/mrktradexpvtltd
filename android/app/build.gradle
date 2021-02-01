@@ -29,7 +29,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     signingConfigs {
         release {
-            storeFile file('D:\\Users\\AndroidStudioFlutterProjects\\mrktradexpvtltd\\android\\key\\tradex.jks')
+            storeFile file('E:\\Users\\AndroidStudioFlutterProjects\\mrktradexpvtltd\\android\\key\\tradex.jks')
             keyAlias 'tradex'
             storePassword 'tradex'
             keyPassword 'tradex'

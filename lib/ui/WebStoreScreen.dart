@@ -1,5 +1,5 @@
 import './base/libraryExport.dart';
-
+import 'package:html/parser.dart';
 class CategoryScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _CategoryState();
@@ -402,6 +402,158 @@ class _CategoryState extends State<CategoryScreen> {
     );
   }
 }
+class ProductcopScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ProductcopState();
+}
+
+class _ProductcopState extends State<ProductcopScreen> {
+  List<Map> _list;
+  List<Map> search = List<Map>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    ApiAdmin().getBasicCorporateProduct().then((value) => {
+      setState(() {
+        Map<String, dynamic> response = value.data;
+
+        _list = List<Map>();
+        if (response['status'] == '200') {
+          response['result'].forEach((value) {
+            _list.add(value);
+          });
+        }
+        search.addAll(_list);
+        print('assdf$search');
+        print('Dio Response $response');
+      }),
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          centerTitle: true,
+          title:Text("PRODUCTS IN MARKET"),
+
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+
+        ),
+        body: Column(children: <Widget>[
+
+          Expanded(
+            child:
+            _list == null
+                ? Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Center(
+                child: GFLoader(loaderColorOne: Colors.white),
+              ),
+            )
+                : _list.isEmpty
+                ? Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child:Center(
+                heightFactor:  MediaQuery.of(context).size.height-0,
+                widthFactor:   MediaQuery.of(context).size.width-0,
+                child:Image(image: AssetImage('images/nodatafound.png'),
+                ),
+              ),
+            )
+                :ListView(
+                children: _list.map((item) {
+                 String t="";
+                  HtmlTags.removeTag(htmlString: item['category'], callback: (string) { print(string);
+                  t=string;
+
+                  },);
+                 String des="";
+                 HtmlTags.removeTag(htmlString: item['description'], callback: (string) { print(string);
+                 des=string;
+
+                 },);
+                  return Column(
+                    children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: new  Card(
+                          child: Container(
+
+
+                            child: Column(
+                              children: [
+                                Container(height:70,
+                                    child: Image(image:NetworkImage(item['image'] ))),
+                                ExpansionTile(
+
+
+
+                                  title: Padding(
+                                    padding: EdgeInsets.all(0),
+                                    child: Center(
+                                      child: Text(t?? 'Name Error',style: (TextStyle(color:Colors.blue,fontWeight: FontWeight.bold,fontSize: 15,))
+                                      ),
+                                    ),
+                                  ),
+                                  children: [ListTile(subtitle:Text(des) ,)],
+                                ) ,
+                              ],
+                            ),
+                          ),shadowColor: Colors.black,
+                        ),
+                    ),
+                      Divider(),
+                    ],
+                  );
+                }).toList()),
+
+
+          )]));
+  }
+}
+
+
+class HtmlTags {
+
+  static void removeTag({ htmlString, callback }){
+    var document = parse(htmlString);
+    String parsedString = parse(document.body.text).documentElement.text;
+    callback(parsedString);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class SubCategoryL2Screen extends StatefulWidget {
   final int id;

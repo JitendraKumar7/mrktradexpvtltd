@@ -136,16 +136,13 @@ List<Map> search= List<Map>();
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
                   child: Center(
-                    child: Text(
-                      'Empty',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    heightFactor:  MediaQuery.of(context).size.height-0,
+                    widthFactor:   MediaQuery.of(context).size.width-0,
+                    child:Image(image: AssetImage('images/nodatafound.png'),
                     ),
                   ),
-                )
-              : ListView(
+                ) :
+    ListView(
                   children: _list.map((item) {
                   String id = item['ledger_id'].toString();
                   return Column(
@@ -171,6 +168,7 @@ List<Map> search= List<Map>();
                     ],
                   );
                 }).toList()),
-    )]));
+    )
+      ]));
   }
 }

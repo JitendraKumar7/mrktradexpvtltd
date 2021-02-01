@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:mrktradexpvtltd/Pdfview/Salespdf.dart';
 import 'package:path_provider/path_provider.dart';
-
-
 import '../base/libraryExport.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -51,7 +49,7 @@ class _SalesOrderViewState extends State<SalesOrderViewScreen> {
               List<String> _unit = result['unit'].cast<String>();
               List<String> _amount = result['amount'].cast<String>();
               int length = _product.length;
-              for (var i = 1; i < length; i++) {
+              for (var i = 0; i < length; i++) {
                 rows.add(DataRow(cells: [
                   getDataCell1(_productId, i, '#'),
                   getDataCell(_product, i),

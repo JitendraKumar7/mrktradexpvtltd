@@ -13,6 +13,19 @@ class ApiClient extends AppConstants {
     );
   }
 
+  Future<Response<Map>> addActivityForm(Map params) async {
+    Map params = Map<String, dynamic>();
+
+    params['user_id'] = userId;
+
+    return await getInstance().post('addActivityForm', data: params);
+  }
+  Future<Response<Map>>  getActivityForm(id,date) async {
+    Map params = Map<String, dynamic>();
+params['date']=    date;
+    params['user_id'] = id;
+    return await getInstance().post('getActivityForm', data: params);
+  }
   Future<Response<Map>> getGallery() async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;

@@ -35,11 +35,25 @@ class ApiAdmin extends AppConstants {
     params['user_id'] = userId;
     return await getInstance().post('getPartyMaster', data: params);
   }
+  Future<Response<Map>> getBasicCorporateProduct() async {
+    Map params = Map<String, dynamic>();
+    params['konnect_id'] = konnectId;
+    params['user_id'] = userId;
+    return await getInstance().post('getBasicCorporateProduct', data: params);
+  }
   Future<Response<Map>> getPartyDetails(LinkuserKntID,LinkuserID) async {
     Map params = Map<String, dynamic>();
-    params['konnect_id'] = LinkuserKntID;
+    params['id'] = LinkuserID;
+    params['konnect_id'] = konnectId;
+    params['user_id'] = userId;
+
+    return await getInstance().post('getLinkUserPartyMaster', data: params);
+  }
+  Future<Response<Map>> getkompassProActivityDetails(LinkuserID) async {
+    Map params = Map<String, dynamic>();
+
     params['user_id'] = LinkuserID;
-    return await getInstance().post('getPartyDetails', data: params);
+    return await getInstance().post('getkompassProActivityDetails', data: params);
   }
   Future<Response<Map>> getLinkUserList() async {
     Map params = Map<String, dynamic>();
@@ -60,7 +74,30 @@ class ApiAdmin extends AppConstants {
     params['user_id'] = userId;
     return await getInstance().post('getPaymentReceipt', data: params);
   }
+  Future<Response<Map>>  getQuotation() async {
+    Map params = Map<String, dynamic>();
+    params['konnect_id'] = konnectId;
+    params['sub_user_id'] = userId;
+    return await getInstance().post('getQuotation', data: params);
+  }
+  Future<Response<Map>>  getLinkQuotation(linkuserid) async {
+    Map params = Map<String, dynamic>();
+    params['konnect_id'] = konnectId;
+    params['sub_user_id'] = linkuserid;
+    return await getInstance().post('getQuotation', data: params);
+  }
+  Future<Response<Map>>  addQuotation(Map params) async {
 
+    params['konnect_id'] = konnectId;
+
+    return await getInstance().post('addQuotation', data: params);
+  }
+  Future<Response<Map>>  editQuotation(Map params) async {
+
+    params['konnect_id'] = konnectId;
+
+    return await getInstance().post('editQuotation', data: params);
+  }
   Future<Response<Map>> getLedger(String from) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
@@ -84,7 +121,9 @@ class ApiAdmin extends AppConstants {
     params['from'] = from;
     return await getInstance().post('getPurchaseData', data: params);
   }
-
+  Future<Response<Map>> getQuotationById(String id) async {
+    return await getInstance().post('getQuotationById', data: {'id': id});
+  }
   Future<Response<Map>> getLedgerById(String id) async {
     return await getInstance().post('getLedgerById', data: {'id': id});
   }
@@ -111,21 +150,38 @@ class ApiAdmin extends AppConstants {
   Future<Response<Map>> getPurchaseInvoiceById(String id) async {
     return await getInstance().post('getPurchaseInvoiceById', data: {'id': id});
   }
+  Future<Response<Map>> getSalesInvoiceThrewInvoiceNo(String Invoiceno,GstNo) async {
+    Map params = Map<String, dynamic>();
+    params['konnect_id'] = konnectId;
+    params['invoice_no'] = Invoiceno;
+    params['gstno'] = GstNo;
+
+    return await getInstance().post('getSalesInvoiceThrewInvoiceNo', data: params);
+  }
+
+  Future<Response<Map>> getPurchaseInvoiceThrewInvoiceNo(String Invoiceno,GstNo) async {
+    Map params = Map<String, dynamic>();
+    params['konnect_id'] = konnectId;
+    params['invoice_no'] = Invoiceno;
+    params['gstno'] = GstNo;
+
+    return await getInstance().post('getPurchaseInvoiceThrewInvoiceNo', data: params);
+  }
 
   Future<Response<Map>> getLinkUserLedger(var id, String from) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
-    params['user_id'] = userId;
+    params['sub_user_id'] = id;
     params['from'] = from;
-    params['id'] = id;
-    return await getInstance().post('getLinkUserSalesOrder', data: params);
+
+    return await getInstance().post('getLinkUserLedger', data: params);
   }
 
   Future<Response<Map>> getLinkUserPayReceipt(var id) async {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;
-    params['id'] = id;
+    params['sub_user_id'] = id;
     return await getInstance().post('getLinkUserPayReceipt', data: params);
   }
 
@@ -150,7 +206,7 @@ class ApiAdmin extends AppConstants {
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;
     params['from'] = from;
-    params['id'] = id;
+    params['sub_user_id'] = id;
     return await getInstance().post('getLinkUserSalesInvoice', data: params);
   }
 
@@ -158,7 +214,7 @@ class ApiAdmin extends AppConstants {
     Map params = Map<String, dynamic>();
     params['konnect_id'] = konnectId;
     params['user_id'] = userId;
-    params['id'] = id;
+    params['sub_user_id'] = id;
     return await getInstance().post('getLinkUserProformaInvoice', data: params);
   }
 

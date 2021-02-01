@@ -26,7 +26,7 @@ reportView(context, basicInfo, dataTable, result, location) async {
               alignment: Alignment.center,
               margin: const EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
               padding: const EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
-              child: Text('ORDER SUMMERY',
+              child: Text('ORDER SUMMARY',
                   style: Theme.of(context)
                       .defaultTextStyle
                       .copyWith(color: PdfColors.black))),
@@ -38,8 +38,40 @@ reportView(context, basicInfo, dataTable, result, location) async {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    getRowDesign(
+                    Text(
                       '${result['dispatch_status']}',
+                      style: TextStyle(color: PdfColors.red,fontWeight: FontWeight.bold,fontSize:10 )
+                    ),
+                    getRowDesign(
+                      basicInfo.organisation,
+                      12,
+                    ),
+                    getRowDesign(
+                      location.address,
+                      9,
+                    ),
+                    getRowDesign(
+                      'GST No :- ' + location.gstNo,
+                      10,
+                    ),
+                    getRowDesign(
+                      'PHN :- ' + basicInfo.mobileNumber,
+                      9,
+                    ),
+
+
+
+                  ],
+                ),
+              ),
+              Container(width: 50),
+              Container(
+                width: 220,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    getRowDesign(
+                      'ORDER ID:- ${result['booking_id']}',
                       10,
                     ),
                     getRowDesign(
@@ -62,36 +94,13 @@ reportView(context, basicInfo, dataTable, result, location) async {
                       '${result['remark']}',
                       10,
                     ),
-                  ],
-                ),
-              ),
-              Container(width: 40),
-              Container(
-                width: 220,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    getRowDesign(
-                      'ORDER ID:- ${result['booking_id']}',
-                      10,
-                    ),
-                    getRowDesign(
-                      basicInfo.organisation,
-                      12,
-                    ),
-                    getRowDesign(
-                      location.address,
-                      9,
-                    ),
-                    getRowDesign(
-                      'GST No :- ' + location.gstNo,
-                      10,
-                    ),
-                    Container(height: 30),
+                    Container(height: 10),
                     getRowDesign(
                       'Date :- ${result['timestamp']}',
                       10,
                     ),
+
+
                   ],
                 ),
               ),
@@ -120,6 +129,7 @@ reportView(context, basicInfo, dataTable, result, location) async {
                 context: context,
                 cellStyle: TextStyle(color: PdfColors.black, fontSize: 8),
                 rowDecoration: BoxDecoration(borderRadius: 0),
+                cellAlignment: Alignment.center,
                 border:
                     TableBorder(verticalInside: false, horizontalInside: false),
                 headerDecoration: new BoxDecoration(
@@ -151,7 +161,7 @@ reportView(context, basicInfo, dataTable, result, location) async {
   //save PDF
 
   final String dir = (await getApplicationDocumentsDirectory()).path;
-  final String path = '$dir/${result['company_name']}SalesOrder.pdf';
+  final String path = '$dir/${result['firm_name']}  SalesOrder.pdf';
   final File file = File(path);
   await file.writeAsBytes(pdf.save());
   material.Navigator.of(context).push(

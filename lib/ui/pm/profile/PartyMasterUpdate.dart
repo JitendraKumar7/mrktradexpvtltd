@@ -105,7 +105,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                 SizedBox(height: 24.0),
                 TextFormField(
                   autofocus: false,
-                  obscureText: true,
+                  obscureText:! _passwordVisible,
                   controller: _password3,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(

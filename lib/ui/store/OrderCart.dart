@@ -637,8 +637,7 @@ class _NotepadOrderFormState extends State<NotepadOrderForm> {
                   headerAnimationLoop: false,
                   animType: AnimType.TOPSLIDE,
                   dialogType: DialogType.WARNING,
-                  btnOkOnPress: () {})
-                  .show();
+                  btnOkOnPress: () {}).show();
             }
           },
           color: Colors.lightBlueAccent,

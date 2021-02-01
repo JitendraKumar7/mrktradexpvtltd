@@ -210,6 +210,22 @@ class _PartyDashboardState extends State<PartyDashboardScreen> {
             ),
             Divider(),
             ListTile(
+              leading: Icon(Icons.insert_drive_file_rounded),
+              title: Text('Sales Quotation Purchase Orders'),
+              onTap: () async {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => PartySalesOrderScreen(
+                      id: profile.id,
+                    ),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
               leading: Icon(Icons.chat),
               title: Text('My Payment'),
               onTap: () async {

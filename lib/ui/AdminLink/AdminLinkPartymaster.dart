@@ -43,12 +43,12 @@ String LinkuserKntID= widget.id['Konnectid'].toString();
   onChanged(String value) {
     _list= List<Map>();
     search.forEach((item) {
-      String q1= item['Name'];
+      String q1= item['party_master_name'];
 
       setState(() {
         if (q1.toLowerCase().contains(value.toLowerCase())){
 
-          print('search item name ${item['Name']} == ${value} ');
+          print('search item name ${item['party_master_name']} == ${value} ');
           _list.add(item);
         }
       });
@@ -112,18 +112,13 @@ String LinkuserKntID= widget.id['Konnectid'].toString();
               ),
             )
                 : _list.isEmpty
-                ? Container(
-              height: MediaQuery.of(context).size.height,
+                ?  Container(
               width: MediaQuery.of(context).size.width,
-              child: Center(
-                child: Text(
-                  'Empty',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              height: 200,
+
+              child:Image(image: AssetImage('images/nodatafound.png'),
               ),
+
             )
                 :ListView(
                 children: _list.map((item) {
@@ -135,14 +130,14 @@ String LinkuserKntID= widget.id['Konnectid'].toString();
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  AdminLinkPartyMasterViewScreen (id: item['master_id']),
+                                  AdminLinkPartyMasterViewScreen (id:  item['id']),
                             ),
                           );
                         },
                         title: Padding(
                           padding: EdgeInsets.all(10),
                           child: Text(
-                              item['Name'] ?? 'Name Error',style: (TextStyle(color:Colors.black,fontWeight: FontWeight.bold,fontSize: 16))
+                              item['party_master_name'] ?? 'Name Error',style: (TextStyle(color:Colors.black,fontWeight: FontWeight.bold,fontSize: 16))
                           ),
                         ),
                       ),

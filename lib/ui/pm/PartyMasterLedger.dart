@@ -11,7 +11,7 @@ class PartyLedgerScreen extends StatefulWidget {
 
 class _PartyLedgerState extends State<PartyLedgerScreen> {
   List<Map> _ledger;
-
+List<Map> search =new List();
   @override
   void initState() {
     super.initState();
@@ -26,23 +26,72 @@ class _PartyLedgerState extends State<PartyLedgerScreen> {
                 _ledger.add(value);
               });
             }
+            search.addAll(_ledger);
             print(response);
           }),
         });
   }
+  Widget appBarTitle = new Text("Ledger");
+  Icon actionIcon = new Icon(Icons.search);
+  onChanged(String value) {
+    _ledger= List<Map>();
+    search.forEach((item) {
+      String q1= item['account_name'];
 
+      setState(() {
+        if (q1.toLowerCase().contains(value.toLowerCase())){
+
+          print('search item name ${item['account_name']} == ${value} ');
+          _ledger.add(item);
+        }
+      });
+
+    });
+
+
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
+        title:appBarTitle,
+        actions: <Widget>[
+          new IconButton(icon: actionIcon,onPressed:(){
+            setState(() {
+              if ( this.actionIcon.icon == Icons.search){
+                this.actionIcon = new Icon(Icons.close);
+                this.appBarTitle =   new TextFormField(
+                  autofocus: false,
+                  onChanged: onChanged,
+                  decoration: InputDecoration(
+                    filled: true,
+                    hintText: 'Search Here...',
+                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.search),
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      borderSide: BorderSide(color: Colors.blue.shade300),
+                    ),
+                  ),
+                );}
+              else {
+                this.actionIcon = new Icon(Icons.search);
+                this.appBarTitle = new Text('Ledger');
+              }
+
+
+            });
+          } ,),],
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Ledger'),
       ),
-      body: _ledger == null
+      body:Column(children: [Expanded(child:  _ledger == null
           ? Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -51,19 +100,18 @@ class _PartyLedgerState extends State<PartyLedgerScreen> {
               ),
             )
           : _ledger.isEmpty
-              ? Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-                  child: Center(
-                    child: Text(
-                      'Empty',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                )
+              ? Center(
+        child: Container(
+          alignment: Alignment.center,
+          width: 200,
+          height: 200,
+          child:Center(
+
+            child:Image(image: AssetImage('images/nodatafound.png'),
+            ),
+          ),
+        ),
+      )
               : ListView(
                   children: _ledger.map((item) {
                   return Column(
@@ -81,13 +129,13 @@ class _PartyLedgerState extends State<PartyLedgerScreen> {
                         title: Padding(
                             padding: EdgeInsets.all(10),
                             child: Text(
-                              item['account_name'],
+                              item['account_name'],style:  TextStyle(color:Colors.black,fontWeight: FontWeight.bold,fontSize: 14),
                             )),
                       ),
                       Divider(),
                     ],
                   );
                 }).toList()),
-    );
+          )],) );
   }
 }

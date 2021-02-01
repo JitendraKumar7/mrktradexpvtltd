@@ -28,9 +28,10 @@ class _AdminLoginState extends State<AdminLoginScreen> {
   TextEditingController _loginId = TextEditingController();
   List<RadioModel> loginList = List<RadioModel>();
   RadioModel modal = RadioModel(UserType.LINKED, true, '');
-
+bool _passwordVisible;
   @override
   void initState() {
+    _passwordVisible=false;
     super.initState();
     loginList.add(RadioModel(UserType.LINKED, true, 'Link User'));
     loginList.add(RadioModel(UserType.ADMIN, false, 'Co Admin'));
@@ -156,7 +157,7 @@ class _AdminLoginState extends State<AdminLoginScreen> {
               SizedBox(height: 24.0),
               TextFormField(
                 autofocus: false,
-                obscureText: true,
+                obscureText:!_passwordVisible,
                 controller: _password,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
@@ -164,6 +165,11 @@ class _AdminLoginState extends State<AdminLoginScreen> {
                   fillColor: Colors.white,
                   hintText: 'Password',
                   prefixIcon: Icon(Icons.lock),
+                  suffixIcon:IconButton (icon:Icon(_passwordVisible?Icons.visibility:Icons.visibility_off,color: Colors.pink,),onPressed: (){
+                    setState(() {
+                      _passwordVisible=!_passwordVisible;
+                    });
+                  }, ),
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(6.0)),

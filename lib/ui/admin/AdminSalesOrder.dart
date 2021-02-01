@@ -1,4 +1,5 @@
 import 'package:custom_radio_grouped_button/CustomButtons/CustomRadioButton.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:mrktradexpvtltd/ui/view/LegerViewGST.dart';
 
@@ -16,6 +17,11 @@ class AdminSalesOrderScreen extends StatefulWidget {
 class _AdminSalesOrderState extends State<AdminSalesOrderScreen> {
   ScrollController _scrollController= new ScrollController();
   List<Map> _list;
+  Widget dataTable;
+  String _sDate;
+  String _eDate;
+  Map _ledger;
+  String Gstno;
   List<Map> search = List<Map>();
   final Comment = TextEditingController();
   ProgressDialog pr;
@@ -107,11 +113,7 @@ super.dispose();
 
     String _verticalGroupValue ;
 
-    // set up the buttons
 
-    // set up the AlertDialog
-
-    // show the dialog
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -166,15 +168,12 @@ super.dispose();
                   )
                 : _list.isEmpty
                     ? Container(
-                        width: MediaQuery.of(context).size.height,
-                        height: MediaQuery.of(context).size.height,
-                        child: Center(
-                          child: Text(
-                            'Empty',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        width: 200,
+                        height: 200,
+                        child:Center(
+                          heightFactor:  MediaQuery.of(context).size.height-0,
+                          widthFactor:   MediaQuery.of(context).size.width-0,
+                          child:Image(image: AssetImage('images/nodatafound.png'),
                           ),
                         ),
                       )
@@ -193,12 +192,8 @@ super.dispose();
                           viewledger="ViewLeger";
                         }
                         int id = item['booking_id'];
-                        String t = item['status']
-                                .toString()
-                                .split("-")
-                                .first
-                                .toLowerCase()
-                                .trim(),
+                        String t = item['status'].toString().split("-").first.toLowerCase().trim();
+                            String tcomment = item['status'].toString().split("-").last.toLowerCase().trim(),
                             addform = item['add_from']
                                 .toString()
                                 .toLowerCase()
@@ -210,11 +205,11 @@ super.dispose();
                           addformcolor = Colors.indigo;
                         }
                         if (t == "confirmed") {
-                          color = Colors.blue;
+                          color = Colors.green;
                           ashape = new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(30.0));
                         } else if (t == "hold") {
-                          color = Colors.brown;
+                          color = Colors.red;
                           ashape = new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(30.0));
                         } else if (t == "received") {
@@ -243,8 +238,8 @@ super.dispose();
                                   ),
                                 );
                               },
-                              trailing: (Expanded(
-                                  child: Column(
+                              trailing: (
+                                   Column(
                                 children: [
                                   InkWell(
 
@@ -299,7 +294,7 @@ super.dispose();
                                                       ),
                                                       TextFormField(
                                                         controller: Comment,
-                                                        autofocus: true,
+                                                        autofocus: false,
                                                         decoration:
                                                             const InputDecoration(
                                                           labelText: 'Comment',
@@ -316,17 +311,13 @@ super.dispose();
                                                     onPressed: () {
                                                       pr.show();
                                                       Future.delayed(Duration(
-                                                              seconds: 2))
+                                                              seconds: 1))
                                                           .then((value) {
                                                         pr
                                                             .hide()
                                                             .whenComplete(() {
                                                           ApiAdmin()
-                                                              .changeOrderStatus(
-                                                                  id,
-                                                                  _verticalGroupValue,
-                                                                  Comment.text)
-                                                              .then((value) {
+                                                              .changeOrderStatus(id, _verticalGroupValue+'-${Comment.text}', Comment.text).then((value) {
                                                             Navigator.of(
                                                                     context)
                                                                 .pop();
@@ -336,44 +327,23 @@ super.dispose();
                                                                     'status'] ==
                                                                 '200') {
                                                               setState(() {
+
                                                                 print(
                                                                     'outputqwerty ${response}');
                                                               });
+setState(() {
+  item['status']=_verticalGroupValue + '-${Comment.text}';
+  Comment.clear();
 
-                                                              pr.show();
-                                                              Future.delayed(
-                                                                      Duration(
-                                                                          seconds: 5))
-                                                                  .then(
-                                                                      (value) {
-                                                                pr
-                                                                    .hide()
-                                                                    .whenComplete(
-                                                                        () {
-                                                                  ApiAdmin()
-                                                                      .getSalesOrder(valuepag.toString())
-                                                                      .then(
-                                                                          (value) =>
-                                                                              {
-                                                                                setState(() {
-                                                                                  _list = List<Map>();
-                                                                                  _list.clear();
-                                                                                  Map<String, dynamic> response = value.data;
-                                                                                  if (response['status'] == '200') {
-                                                                                    response['result'].forEach((v) {
-                                                                                      _list.add(v);
-                                                                                    });
-                                                                                  }
-                                                                                  search.addAll(_list);
-                                                                                  print(response);
-                                                                                }),
-                                                                              });
-                                                                });
-                                                              });
+});
+
+
                                                             }
                                                           });
                                                         });
+
                                                       });
+
                                                     },
                                                   ),
                                                   )],
@@ -385,20 +355,31 @@ super.dispose();
 
 
 
-                                      child: Container(
-                                        height: 50,
-                                          width: 90,
-                                          child: Column(
-                                        children: [
-                                          Text(
-                                            '${item['status'].toString().split("-").first.toUpperCase()}',
-                                            style: (TextStyle( color: color, fontWeight: FontWeight.bold, fontSize: 12)),
-                                          ),
-                                        ],
-                                      )))
+                                      child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Container(width: 100,
+                                              child:
+                                            Column(
+                                            children: [
+                                              Text(
+                                                '${item['status'].toString().split("-").first.toUpperCase()}',
+                                                style: (TextStyle( color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+                                              ),
+                                              SizedBox(height: 5,),
+
+
+
+                                            ],
+                                          )
+
+
+
+
+                                          )))
                                 ],
-                              ))),
-                              title: Expanded(
+                              )),
+                              title:
+                              Container(
                                   child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -430,7 +411,7 @@ super.dispose();
                                 children: <Widget>[
 
                                   Text(
-                                    item['dispatch_status'],
+                                    '${item['dispatch_status']}${tcomment}',
                                     style: (TextStyle(
                                         fontSize: 10,
                                         color: Colors.red,
@@ -443,7 +424,8 @@ super.dispose();
                               ),
                             ),
 
-Padding(padding: EdgeInsets.symmetric(horizontal: 16,vertical: 4),child:Row( crossAxisAlignment: CrossAxisAlignment.start,
+Padding(padding: EdgeInsets.symmetric(horizontal: 16,vertical: 4),child:
+Row( crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
 
                                 Expanded(child: InkWell(
@@ -455,16 +437,44 @@ Padding(padding: EdgeInsets.symmetric(horizontal: 16,vertical: 4),child:Row( cro
                                         fontWeight: FontWeight.bold)),
                                   ),
                                   onTap: () {
-                                    if(item['gst']==null) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              LedgerViewGSTScreen(
-                                                  id: id.toString()),
-                                        ),
-                                      );
-                                    }},
+                                    ApiAdmin().getLedgerThrewGst(id.toString()).then((value) => {
+                                      setState(() {
+                                        Map<String, dynamic> response = value.data;
+
+                                        if (response['status'] == '200') {
+
+                                       _ledger = response['result'][0];
+
+
+                                        Gstno=_ledger['gstno'];
+
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(
+                                           builder: (BuildContext context) =>
+                                               LedgerViewGSTScreen(
+                                                   id: id.toString()),
+                                         ),
+                                       );
+
+
+                                           print(response);
+                                                                         }
+    else {
+
+        Fluttertoast.showToast(
+          msg: "No Ledger Found",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+
+        );
+          }
+                                      }),
+                                    });
+
+
+
+                                    },
                                 )),
                                 Text(
                                   item['timestamp'].toString().toUpperCase(),

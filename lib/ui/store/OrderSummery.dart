@@ -1,3 +1,5 @@
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import '../base/libraryExport.dart';
 
 class OrderSummeryScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class OrderSummeryScreen extends StatefulWidget {
 }
 
 class _OrderSummeryState extends State<OrderSummeryScreen> {
+  ProgressDialog pr;
   TextEditingController _orderRemark = TextEditingController();
   TextEditingController _billAddress = TextEditingController();
   TextEditingController _gstNumber = TextEditingController();
@@ -23,142 +26,191 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
   TextEditingController _mobile = TextEditingController();
   TextEditingController _name = TextEditingController();
 
-  UserProfile profile;
+  UserProfile profiles;
   String paymentCode;
   var orderNumber;
+  Map profile;
+  List<Map> _list;
+
+  List<Map> search = List<Map>();
 
   _bookOrderNow() {
     AwesomeDialog(
-        context: context,
-        dialogType: DialogType.INFO,
-        animType: AnimType.RIGHSLIDE,
-        headerAnimationLoop: false,
-        title: 'Required',
-        desc: 'Required',
-        body: Text('Confirmation place order'),
-        btnOkText: 'Place Order',
-        btnOkOnPress: () {
-          List<String> unit = List<String>();
-          List<String> amount = List<String>();
-          List<String> product = List<String>();
-          List<String> quantity = List<String>();
-          List<String> productId = List<String>();
-          List<String> extraParams = List<String>();
-          widget.summery.forEach((element) {
-            productId.add(element.id.toString());
-            quantity.add(element.controller.text);
-            amount.add(element.amount);
-            unit.add(element.unit);
-            product.add(element.product);
-            extraParams.add(element.extraParams);
-          });
+      context: context,
+      dialogType: DialogType.INFO,
+      animType: AnimType.RIGHSLIDE,
+      headerAnimationLoop: false,
+      title: 'Required',
+      desc: 'Required',
+      body: Text('Confirmation place order'),
+      btnOkText: 'Place Order',
+      btnOkOnPress: () {
+        List<String> unit = List<String>();
+        List<String> amount = List<String>();
+        List<String> product = List<String>();
+        List<String> quantity = List<String>();
+        List<String> productId = List<String>();
+        List<String> extraParams = List<String>();
+        widget.summery.forEach((element) {
+          productId.add(element.id.toString());
+          quantity.add(element.controller.text);
+          amount.add(element.amount);
+          unit.add(element.unit);
+          product.add(element.product);
+          extraParams.add(element.extraParams);
+        });
 
-          Map<String, dynamic> params = Map<String, dynamic>();
+        Map<String, dynamic> params = Map<String, dynamic>();
 
-          params['user_id'] = '';
-          params['address1'] = '';
-          params['address2'] = '';
+        params['user_id'] = '';
+        params['address1'] = '';
+        params['address2'] = '';
 
-          params['email'] = _emailId.text;
-          params['firm_name'] = _name.text;
-          params['pincode'] = _pinCode.text;
-          params['remark'] = _orderRemark.text;
-          params['address'] = _billAddress.text;
-          params['gstNumber'] = _gstNumber.text;
-          params['contact_number'] = _mobile.text;
+        params['email'] = _emailId.text;
+        params['firm_name'] = _name.text;
+        params['pincode'] = _pinCode.text;
+        params['remark'] = _orderRemark.text;
+        params['address'] = _billAddress.text;
+        params['gstNumber'] = _gstNumber.text;
+        params['contact_number'] = _mobile.text;
 
-          var id = profile == null ? '' : profile.id;
-          params['btob_id'] = id;
-          params['account_name_id'] = id;
+        params['unit'] = unit;
+        params['amount'] = amount;
+        params['product'] = product;
+        params['quantity'] = quantity;
+        params['product_id'] = productId;
 
-          params['unit'] = unit;
-          params['amount'] = amount;
-          params['product'] = product;
-          params['quantity'] = quantity;
-          params['product_id'] = productId;
+        params['parms'] = extraParams;
+        params['orderFormData'] = widget.orderFormData ?? List<String>();
 
-          params['parms'] = extraParams;
-          params['orderFormData'] = widget.orderFormData ?? List<String>();
+        print(params.toString());
+        ProgressDialog dialog = ProgressDialog(context, isDismissible: false);
+        dialog.style(
+            message: 'Please Wait...',
+            progressWidget: CircularProgressIndicator());
+        dialog.show();
+        ApiClient().addBooking(params).then((value) => {
+              orderNumber = value.data['result'],
 
-          print(params.toString());
-          ProgressDialog dialog =
-          ProgressDialog(context, isDismissible: false);
-          dialog.style(
-              message: 'Please Wait...',
-              progressWidget: CircularProgressIndicator());
-          dialog.show();
-          ApiClient().addBooking(params).then((value) =>
-          {
-            orderNumber = value.data['result'],
+              print(value),
+              dialog.hide(),
 
-            print(value),
-            dialog.hide(),
+              AwesomeDialog(
+                  title: 'Success',
+                  context: context,
+                  animType: AnimType.SCALE,
+                  dismissOnTouchOutside: false,
+                  btnOkIcon: Icons.check_circle,
+                  dialogType: DialogType.SUCCES,
+                  desc:
+                      'Thank you, your order #$orderNumber has been successfully completed!',
+                  btnOkOnPress: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => SplashScreen(),
+                      ),
+                    );
+                  }).show(),
 
-            AwesomeDialog(
-                title: 'Success',
-                context: context,
-                animType: AnimType.SCALE,
-                dismissOnTouchOutside: false,
-                btnOkIcon: Icons.check_circle,
-                dialogType: DialogType.SUCCES,
-                desc:
-                'Thank you, your order #$orderNumber has been successfully completed!',
-                btnOkOnPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => SplashScreen(),
-                    ),
-                  );
-                }).show(),
-
-            //{"status":"200","message":"success","result":3585}
-            AppPreferences.setString(AppConstants.USER_CART_DATA,
-                jsonEncode(List<String>())),
-          });
-        },
-
-    )
-        .show();
+              //{"status":"200","message":"success","result":3585}
+              AppPreferences.setString(
+                  AppConstants.USER_CART_DATA, jsonEncode(List<String>())),
+            });
+      },
+    ).show();
   }
 
   @override
   void initState() {
     super.initState();
 
-    ApiClient().getPaymentButton().then((value) =>
-    {
-      setState(() {
-        print(value.data);
-        Map response = value.data;
-        if (response['status'] == '200') {
-          paymentCode = response['result']['payment_code'];
-          print('Payment Code $paymentCode');
-        }
-      }),
-    });
+    ApiClient().getPaymentButton().then((value) => {
+          setState(() {
+            print(value.data);
+            Map response = value.data;
+            if (response['status'] == '200') {
+              paymentCode = response['result']['payment_code'];
+              print('Payment Code $paymentCode');
+            }
+          }),
+        });
 
     String key = AppConstants.USER_LOGIN_CREDENTIAL;
-    AppPreferences.getString(key).then((credential) =>
-    {
-      setState(() {
-        UserLogin login = UserLogin.formJson(credential);
-        if (login.isMaster && login.isLogin) {
-          String key = AppConstants.USER_LOGIN_DATA;
-          AppPreferences.getString(key).then((value) =>
-          {
-            setState(() {
-              Map response = jsonDecode(value);
-              profile = UserProfile.fromJson(response);
-              _billAddress.text = profile.address.trim();
-              _gstNumber.text = profile.gstIn.trim();
-              _emailId.text = profile.email.trim();
-              _mobile.text = profile.phone.trim();
-              _name.text = profile.name.trim();
-            }),
-          });
-        }
-      }),
+    _list = List<Map>();
+    AppPreferences.getString(key).then((credential) {
+      UserLogin login = UserLogin.formJson(credential);
+      String key = AppConstants.USER_LOGIN_DATA;
+      AppPreferences.getString(key).then((value) {
+        setState(() {
+          Map response = jsonDecode(value);
+          profiles = UserProfile.fromJson(response);
+          if (login.isMaster && login.isLogin) {
+            _billAddress.text = profiles.address.trim();
+            _gstNumber.text = profiles.gstIn.trim();
+            _emailId.text = profiles.email.trim();
+            _mobile.text = profiles.phone.trim();
+            _name.text = profiles.name.trim();
+          }
+          else
+            if(login.isLinked && login.isLinked) {
+            pr.show();
+            Future.delayed(Duration(seconds: 2)).then((value) {
+              pr.hide().whenComplete(() {
+
+
+            ApiAdmin().getLinkUserPartyMaster(response['id']).then((value) => {
+                  setState(() {
+                    Map<String, dynamic> response = value.data;
+                    _list = List();
+                    if (response['status'] == '200') {
+                      response['result'].forEach((value) {
+                        _list.add(value);
+                      });
+                    }
+                    search.addAll(_list);
+
+                    print('aaaaaaaaaaaa${_list}');
+                    print('ssssssssss${response}');
+                    _settingModalBottomSheet(context);
+
+
+                  }),
+                });
+                //Navigator.of(context).pop();
+              });
+            });
+          }
+          else {
+            pr.show();
+            Future.delayed(Duration(seconds: 0)).then((value) {
+              pr.hide().whenComplete(() {
+
+
+                ApiAdmin().getPartyMaster().then((value) => {
+                  setState(() {
+                    Map<String, dynamic> response = value.data;
+                    _list = List();
+                    if (response['status'] == '200') {
+                      response['result'].forEach((value) {
+                        _list.add(value);
+                      });
+                    }
+                    search.addAll(_list);
+
+                    print('aaaaaaaaaaaa${_list}');
+                    print('ssssssssss${response}');
+                    _settingModalBottomSheetAdmin(context);
+
+
+                  }),
+                });
+                //Navigator.of(context).pop();
+              });
+            });
+          }
+        });
+      });
     });
   }
 
@@ -293,23 +345,23 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
           Divider(),
           isDiscount
               ? Row(children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Text(
-                'Discount $discount%',
-                textAlign: TextAlign.end,
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Text(
-                '₹ ${disAmount.toStringAsFixed(2)}',
-                textAlign: TextAlign.end,
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ),
-          ])
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      'Discount $discount%',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 12, color: Colors.black),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      '₹ ${disAmount.toStringAsFixed(2)}',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 12, color: Colors.black),
+                    ),
+                  ),
+                ])
               : SizedBox(height: 0),
           isDiscount ? Divider() : SizedBox(height: 0),
         ],
@@ -317,10 +369,7 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
     }).toList());
 
     variantWidgets.add(Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -337,14 +386,332 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
     ));
     return Container(
       padding: EdgeInsets.only(top: 12, bottom: 12),
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       child: Column(children: variantWidgets),
     );
   }
 
+  Widget appBarTitle = new Text(" Your Parties");
+  Icon actionIcon = new Icon(Icons.search);
+
+  onChanged(String value) {
+    _list = List<Map>();
+    search.forEach((item) {
+      String q1 = item['party_master_name'];
+
+      setState(() {
+        if (q1.toLowerCase().contains(value.toLowerCase())) {
+          print('search item name ${item['party_master_name']} == ${value} ');
+          _list.add(item);
+        }
+      });
+    });
+  }
+  onChangedAdmin(String value) {
+    _list = List<Map>();
+    search.forEach((item) {
+      String q1 = item['Name'];
+
+      setState(() {
+        if (q1.toLowerCase().contains(value.toLowerCase())) {
+          print('search item name ${item['Name']} == ${value} ');
+          _list.add(item);
+        }
+      });
+    });
+  }
+  void _settingModalBottomSheet(context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+       // backgroundColor: Colors.transparent,
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.only(
+                topLeft: const Radius.circular(25.0),
+                topRight: const Radius.circular(25.0),
+              ),
+            ),
+            height:  MediaQuery.of(context).size.height * 0.75,
+            child: Column(children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextFormField(
+                  autofocus: false,
+                  onChanged: onChanged,
+                  decoration: InputDecoration(
+                    filled: true,
+                    hintText: 'Search Here...',
+                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.search),
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      borderSide: BorderSide(color: Colors.blue.shade300),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _list == null
+                    ? Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: GFLoader(loaderColorOne: Colors.white),
+                        ),
+                      )
+                    : _list.isEmpty
+                        ? Center(
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 200,
+                              height: 200,
+                              child: Center(
+                                child: Image(
+                                  image: AssetImage('images/nodatafound.png'),
+                                ),
+                              ),
+                            ),
+                          )
+                        : ListView(
+                            children: _list.map((item) {
+                            return Column(
+                              children: <Widget>[
+                                ListTile(
+                                  onTap: () async
+                                  {
+
+
+
+                                    Map response = (await ApiClient()
+                                            .getPartyMasterProfile(item['id']))
+                                        .data;
+
+                                    profile = Map();
+                                    print(response['result']);
+
+                                    Map result = response['result'];
+                                    _billAddress.text = "${result['address'].trim()+result['address2'].trim()+result['address3']}";
+                                    _gstNumber.text = result['gstin'].trim();
+                                    _emailId.text = result['party_master_email'].trim();
+                                    _mobile.text = result['contact_number'].trim();
+                                    _name.text = result['party_master_name'].trim();
+                                    pr.show();
+                                    Future.delayed(Duration(seconds: 1)).then((value) {
+                                      pr.hide().whenComplete(() {
+
+                                        Navigator.of(context).pop();
+                                      });
+                                    });
+
+                                    profile['id'] = result['id'];
+                                    profile['name'] = result['party_master_name'];
+                                    profile['address1'] = result['address'];
+                                    profile['address2'] = result['address2'];
+                                    profile['address3'] = result['address3'];
+                                    profile['country'] = result['country'];
+                                    profile['state'] = result['state'];
+                                    profile['city'] = result['city'];
+                                    profile['contact_number'] =
+                                        result['contact_number'];
+                                    profile['email'] =
+                                        result['party_master_email'];
+                                    profile['bank_name'] = result['bank_name'];
+                                    profile['gstin'] = result['gstin'];
+                                    profile['ifsc_code'] = result['ifsc_code'];
+                                    profile['account_number'] =
+                                        result['account_number'];
+                                    profile['account_name'] =
+                                        result['account_name'];
+                                    profile['opening_balance'] =
+                                        result['opening_balance'];
+                                    profile['debit_credit'] =
+                                        result['debit_credit'];
+                                    profile['credit_period'] =
+                                        result['credit_period'];
+                                    profile['credit_days'] =
+                                        result['credit_days'];
+                                    profile['credit_amount'] =
+                                        result['credit_amount'];
+                                    profile['password'] = result['password'];
+                                    profile['confirm_password'] =
+                                        result['password'];
+                                    profile['image'] = result['image'];
+                                    profile['party_master_id'] = result['id'];
+                                    profile['alternative_contact_number'] =
+                                        result['alternative_contact_number'];
+                                    profile['add_from'] = result['add_from'];
+                                    profile['group_type'] = result['group_type'];
+                                    profile['closingBalance'] =
+                                        result['closingBalance'];
+                                  },
+                                  title: Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Text(
+                                      item['party_master_name'] ?? 'Name Error',
+                                      style:
+                                          TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                Divider(),
+                              ],
+                            );
+                          }).toList()),
+              )
+            ]),
+          );
+        });
+  }
+  void _settingModalBottomSheetAdmin(context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        // backgroundColor: Colors.transparent,
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.only(
+                topLeft: const Radius.circular(25.0),
+                topRight: const Radius.circular(25.0),
+              ),
+            ),
+            height:  MediaQuery.of(context).size.height * 0.75,
+            child: Column(children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextFormField(
+                  autofocus: false,
+                  onChanged: onChangedAdmin,
+                  decoration: InputDecoration(
+                    filled: true,
+                    hintText: 'Search Here...',
+                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.search),
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      borderSide: BorderSide(color: Colors.blue.shade300),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _list == null
+                    ? Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: GFLoader(loaderColorOne: Colors.white),
+                  ),
+                )
+                    : _list.isEmpty
+                    ? Center(
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: 200,
+                    height: 200,
+                    child: Center(
+                      child: Image(
+                        image: AssetImage('images/nodatafound.png'),
+                      ),
+                    ),
+                  ),
+                )
+                    : ListView(
+                    children: _list.map((item) {
+                      return Column(
+                        children: <Widget>[
+                          ListTile(
+                            onTap: () async
+                            {
+
+
+
+                              Map response = (await ApiClient()
+                                  .getPartyMasterProfile(item['master_id']))
+                                  .data;
+
+                              profile = Map();
+                              print(response['result']);
+
+                              Map result = response['result'];
+                              _billAddress.text = "${result['address'].trim()+result['address2'].trim()+result['address3']}";
+                              _gstNumber.text = result['gstin'].trim();
+                              _emailId.text = result['party_master_email'].trim();
+                              _mobile.text = result['contact_number'].trim();
+                              _name.text = result['party_master_name'].trim();
+                              pr.show();
+                              Future.delayed(Duration(seconds: 1)).then((value) {
+                                pr.hide().whenComplete(() {
+
+                                  Navigator.of(context).pop();
+                                });
+                              });
+
+                              profile['id'] = result['id'];
+                              profile['name'] = result['party_master_name'];
+                              profile['address1'] = result['address'];
+                              profile['address2'] = result['address2'];
+                              profile['address3'] = result['address3'];
+                              profile['country'] = result['country'];
+                              profile['state'] = result['state'];
+                              profile['city'] = result['city'];
+                              profile['contact_number'] =
+                              result['contact_number'];
+                              profile['email'] =
+                              result['party_master_email'];
+                              profile['bank_name'] = result['bank_name'];
+                              profile['gstin'] = result['gstin'];
+                              profile['ifsc_code'] = result['ifsc_code'];
+                              profile['account_number'] =
+                              result['account_number'];
+                              profile['account_name'] =
+                              result['account_name'];
+                              profile['opening_balance'] =
+                              result['opening_balance'];
+                              profile['debit_credit'] =
+                              result['debit_credit'];
+                              profile['credit_period'] =
+                              result['credit_period'];
+                              profile['credit_days'] =
+                              result['credit_days'];
+                              profile['credit_amount'] =
+                              result['credit_amount'];
+                              profile['password'] = result['password'];
+                              profile['confirm_password'] =
+                              result['password'];
+                              profile['image'] = result['image'];
+                              profile['party_master_id'] = result['id'];
+                              profile['alternative_contact_number'] =
+                              result['alternative_contact_number'];
+                              profile['add_from'] = result['add_from'];
+                              profile['group_type'] = result['group_type'];
+                              profile['closingBalance'] =
+                              result['closingBalance'];
+                            },
+                            title: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                item['Name'] ?? 'Name Error',
+                                style:
+                                TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                        ],
+                      );
+                    }).toList()),
+              )
+            ]),
+          );
+        });
+  }
   Widget getShippingForm() {
     var variantWidgets = List<Widget>();
 
@@ -466,10 +833,7 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
           color: Colors.blue.shade300,
           border: Border.all(color: Colors.grey.shade50, width: 1),
           borderRadius: BorderRadius.circular(12.0)),
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       child: Column(children: variantWidgets),
     );
   }
@@ -495,15 +859,15 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
                 // Error
                 else {
                   AwesomeDialog(
-                      context: context,
-                      dialogType: DialogType.ERROR,
-                      animType: AnimType.RIGHSLIDE,
-                      headerAnimationLoop: false,
-                      title: 'Required',
-                      desc: 'Name, Phone or Address is required',
-                      btnOkOnPress: () {},
-                      btnOkIcon: Icons.cancel,
-                      btnOkColor: Colors.red)
+                          context: context,
+                          dialogType: DialogType.ERROR,
+                          animType: AnimType.RIGHSLIDE,
+                          headerAnimationLoop: false,
+                          title: 'Required',
+                          desc: 'Name, Phone or Address is required',
+                          btnOkOnPress: () {},
+                          btnOkIcon: Icons.cancel,
+                          btnOkColor: Colors.red)
                       .show();
                 }
               }),
@@ -517,53 +881,55 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
     return paymentCode == null
         ? SizedBox(width: 0)
         : Expanded(
-      child: GFButton(
-          size: 45,
-          text: 'PAY NOW',
-          fullWidthButton: true,
-          type: GFButtonType.outline,
-          onPressed: () {
-            if (_name.text.length > 4 &&
-                _mobile.text.length > 9 &&
-                _billAddress.text.length > 4) {
-              String url = Uri.dataFromString(
-                paymentCode,
-                mimeType: 'text/html',
-                encoding: Encoding.getByName('utf-8'),
-              ).toString();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      InAppWebViewPage(
-                        title: 'Payment',
-                        url: url,
+            child: GFButton(
+                size: 45,
+                text: 'PAY NOW',
+                fullWidthButton: true,
+                type: GFButtonType.outline,
+                onPressed: () {
+                  if (_name.text.length > 4 &&
+                      _mobile.text.length > 9 &&
+                      _billAddress.text.length > 4) {
+                    String url = Uri.dataFromString(
+                      paymentCode,
+                      mimeType: 'text/html',
+                      encoding: Encoding.getByName('utf-8'),
+                    ).toString();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => InAppWebViewPage(
+                          title: 'Payment',
+                          url: url,
+                        ),
                       ),
-                ),
-              ).then(
-                    (value) => _bookOrderNow(),
-              );
-            }
-            // Error
-            else {
-              AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.ERROR,
-                  animType: AnimType.RIGHSLIDE,
-                  headerAnimationLoop: false,
-                  title: 'Required',
-                  desc: 'Name, Phone and Address is required',
-                  btnOkOnPress: () {},
-                  btnOkIcon: Icons.cancel,
-                  btnOkColor: Colors.red)
-                  .show();
-            }
-          }),
-    );
+                    ).then(
+                      (value) => _bookOrderNow(),
+                    );
+                  }
+                  // Error
+                  else {
+                    AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.ERROR,
+                            animType: AnimType.RIGHSLIDE,
+                            headerAnimationLoop: false,
+                            title: 'Required',
+                            desc: 'Name, Phone and Address is required',
+                            btnOkOnPress: () {},
+                            btnOkIcon: Icons.cancel,
+                            btnOkColor: Colors.red)
+                        .show();
+                  }
+                }),
+          );
   }
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, showLogs: true);
+    pr.style(message: 'Please wait...');
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -591,3 +957,4 @@ class _OrderSummeryState extends State<OrderSummeryScreen> {
 
 //prefixIcon: Image(image: AssetImage('assets/search_field.png')),
 }
+

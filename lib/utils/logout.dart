@@ -21,6 +21,7 @@ class Logout {
         btnOkText: 'Logout',
         btnOkOnPress: () async {
           String key = AppConstants.USER_LOGIN_CREDENTIAL;
+          String key1=AppConstants.USER_CART_DATA;
           var credential = await AppPreferences.getString(key);
           UserLogin login = UserLogin.formJson(credential);
 
@@ -33,6 +34,7 @@ class Logout {
           UserLogin login1 = UserLogin.formJson(null);
           String json = jsonEncode(login1.toJson());
           AppPreferences.setString(key, json);
+          AppPreferences.remove(key1);
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(

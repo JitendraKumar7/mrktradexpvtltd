@@ -96,7 +96,8 @@ setState(() {
       body: Column(children: <Widget>[
 
     Expanded(
-    child:_list == null
+    child:
+    _list == null
           ? Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -108,13 +109,10 @@ setState(() {
               ? Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-                  child: Center(
-                    child: Text(
-                      'Empty',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  child:Center(
+                    heightFactor:  MediaQuery.of(context).size.height-0,
+                    widthFactor:   MediaQuery.of(context).size.width-0,
+                    child:Image(image: AssetImage('images/nodatafound.png'),
                     ),
                   ),
                 )

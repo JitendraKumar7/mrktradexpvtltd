@@ -1,4 +1,8 @@
+import 'package:mrktradexpvtltd/ui/link/LinkUserSalesQuatation.dart';
+
 import '../base/libraryExport.dart';
+import 'LinkUserActivityList.dart';
+import 'LinkUserExpanseReport.dart';
 
 class LinkUserDashboardScreen extends StatefulWidget {
   final KonnectDetails konnectDetails;
@@ -166,6 +170,39 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
               ),
             ),
             Divider(),
+
+            ListTile(
+              leading: Icon(Icons.local_activity),
+              title: Text('Activity List'),
+              onTap: () async {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        LinkUserActivityListScreen(id: profile.id),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+
+            ListTile(
+              leading: Icon(Icons.file_copy),
+              title: Text('Expanse Report'),
+              onTap: () async {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        LinkUserExpanseReportScreen(id: profile.id),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+
             ListTile(
               leading: Icon(Icons.group),
               title: Text('Party Master'),
@@ -196,6 +233,21 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ),
             Divider(),
             ListTile(
+              leading: Icon(Icons.library_books),
+              title: Text('Sales Quatation'),
+              onTap: () async {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        LinkUserSalesQuatationScreen(id: profile.id),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(trailing:Icon(Icons.arrow_forward_ios) ,
               leading: Icon(Icons.library_books),
               title: Text('Sales Orders'),
               onTap: () async {

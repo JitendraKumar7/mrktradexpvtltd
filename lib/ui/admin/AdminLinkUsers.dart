@@ -116,13 +116,10 @@ class _AdminLinkUserState extends State<AdminLinkUserScreen> {
                 ? Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              child: Center(
-                child: Text(
-                  'Empty',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+              child:Center(
+                heightFactor:  MediaQuery.of(context).size.height-0,
+                widthFactor:   MediaQuery.of(context).size.width-0,
+                child:Image(image: AssetImage('images/nodatafound.png'),
                 ),
               ),
             )
@@ -130,9 +127,6 @@ class _AdminLinkUserState extends State<AdminLinkUserScreen> {
                 children: _list.map((item) {
                   Map profile;
                   profile = Map();
-
-
-
 
                   profile['userid'] = item['user_id'];
                   profile['Konnectid'] = item['link_user_konnect_id'];
@@ -142,7 +136,7 @@ class _AdminLinkUserState extends State<AdminLinkUserScreen> {
                   profile['password'] = item['password'];
                   profile['Image'] = item['image'];
 
-print(item['email']);
+                  print(item['email']);
 
 
                   Widget myPopMenu() {
@@ -190,7 +184,7 @@ print(item['email']);
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                                    child:Icon(Icons.business),
+                                    child:Icon(Icons.business,color: Colors.teal,),
                                   ),
                                   Text('Party List')
                                 ],
@@ -201,7 +195,7 @@ print(item['email']);
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                                    child: Icon(Icons.local_activity),
+                                    child: Icon(Icons.local_activity,color: Colors.blue,),
                                   ),
                                   Text('Activity List')
                                 ],
@@ -212,7 +206,7 @@ print(item['email']);
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                                    child: Icon(Icons.insert_drive_file),
+                                    child: Icon(Icons.insert_drive_file,color: Colors.brown,),
                                   ),
                                   Text('Expense Report')
                                 ],
@@ -223,9 +217,9 @@ print(item['email']);
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                                    child: Icon(Icons.calendar_today),
+                                    child: Icon(Icons.calendar_today,color:Colors.blueAccent),
                                   ),
-                                  Text('Calendar')
+                                  Text('Calendar',)
                                 ],
                               )),
                           PopupMenuItem(
@@ -234,9 +228,9 @@ print(item['email']);
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                                    child: Icon(Icons.check_circle_outline),
+                                    child: Icon(Icons.check_circle_outline,color: Colors.green,),
                                   ),
-                                  Text('Check I/O')
+                                  Text('Check I/O',)
                                 ],
                               )),
                           PopupMenuItem(
@@ -245,7 +239,7 @@ print(item['email']);
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                                    child: Icon(Icons.location_on_outlined),
+                                    child: Icon(Icons.location_on_outlined,color: Colors.red,),
                                   ),
                                   Text('Location')
                                 ],
@@ -268,7 +262,7 @@ print(item['email']);
                         },
 
                         title: Padding(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(8),
                           child: Text('${ item['first_name'].toString().toUpperCase() }'
                              ?? 'Name Error',style: (TextStyle(color:Colors.black,fontWeight: FontWeight.bold,fontSize: 16))
                           ),
@@ -280,8 +274,7 @@ print(item['email']);
                   NetworkImage(item['image'])??Image.asset('images/iv_empty.png'),
                             backgroundColor: Colors.black26,
                   ),
-                        subtitle:Text(
-                            profile['phnno'] ?? '',style: (TextStyle(color:Colors.black,fontWeight: FontWeight.bold,fontSize: 13))
+                        subtitle:Text(profile['phnno'] ?? '',style: (TextStyle(color:Colors.blue[600],fontWeight: FontWeight.bold,fontSize: 13))
                         ),
                       ),
                       Divider(),

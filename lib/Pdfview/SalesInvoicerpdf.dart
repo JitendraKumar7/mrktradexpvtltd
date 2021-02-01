@@ -139,7 +139,7 @@ int length=item.length;
 
 
 
-        Table.fromTextArray(context: context,cellStyle:TextStyle(color: PdfColors.black ,fontSize: 8) ,rowDecoration:BoxDecoration(borderRadius: 0),border: TableBorder(verticalInside: false,horizontalInside: false),
+        Table.fromTextArray(context: context,cellAlignment: Alignment.center,cellStyle:TextStyle(color: PdfColors.black ,fontSize: 8) ,rowDecoration:BoxDecoration(borderRadius: 0),border: TableBorder(verticalInside: false,horizontalInside: false),
             headerDecoration: new BoxDecoration(color:  PdfColors.lightBlue,),tableWidth: TableWidth.max,defaultColumnWidth: FixedColumnWidth(250.0),
             headerStyle: TextStyle(color: PdfColors.white,fontWeight: FontWeight.bold ,fontSize: 10),
             data: <List<String>>[

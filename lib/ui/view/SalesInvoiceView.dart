@@ -148,8 +148,19 @@ String _upi;
       body: dataTable == null
           ? Center(
               child: GFLoader(loaderColorOne: Colors.white),
-            )
-          : SingleChildScrollView(
+            ):dataTable==null
+          ? Center(
+        child: Container(
+          alignment: Alignment.center,
+          width: 200,
+          height: 200,
+          child:Center(
+
+            child:Image(image: AssetImage('images/nodatafound.png'),
+            ),
+          ),
+        ),
+      ) : SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: ConstrainedBox(
                 constraints: BoxConstraints(minWidth: width),

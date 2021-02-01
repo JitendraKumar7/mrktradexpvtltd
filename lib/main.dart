@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'ui/base/libraryExport.dart';
 import 'dart:async';
 import 'dart:math';
@@ -15,7 +16,9 @@ final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _showNotification(int id, Map message) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-    'mrktradexpvtltd1', 'mrk tradex', 'mrk tradex pvt ltd',
+    'mrktradexpvtltd1',
+    'mrk tradex',
+    'mrk tradex pvt ltd',
     sound: RawResourceAndroidNotificationSound('slow_spring_board'),
     importance: Importance.max,
     priority: Priority.high,
@@ -125,7 +128,7 @@ class NotificationHandler {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   appLaunch = await notificationsPlugin.getNotificationAppLaunchDetails();
-
+  WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
   runApp(MyApp());
 }
@@ -208,6 +211,16 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void openDashboard() async {
+    String appKey = AppConstants.APP_DATA;
+    int appId = await AppPreferences.getInt(appKey);
+
+    print('app splash id $appId');
+    await AppConstants.setAppId(appId);
+
+    print('app splash get id ${AppConstants.appId}');
+    print('app splash get userId ${AppConstants().userId}');
+    print('app splash get konnectId ${AppConstants().konnectId}');
+
     Map response = (await ApiClient().getCardDetails()).data;
 
     if (response['status'] == '200') {
@@ -215,7 +228,7 @@ class _SplashScreenState extends State<SplashScreen> {
       String key1 = AppConstants.KONNECT_DATA;
       AppPreferences.setString(key1, jsonEncode(result));
       KonnectDetails details = KonnectDetails.fromJson(result);
-
+      print(details);
       String key2 = AppConstants.USER_LOGIN_CREDENTIAL;
       var credential = await AppPreferences.getString(key2);
 
@@ -233,7 +246,7 @@ class _SplashScreenState extends State<SplashScreen> {
         params['fcmToken'] = fcmToken;
         params['deviceId'] = deviceId;
 
-        Map response = (await ApiClient().checkedLogin(params)).data;
+        //Map response = (await ApiClient().checkedLogin(params)).data;
 
         if (response['status'] == '200' || login.isMaster) {
           Navigator.pushAndRemoveUntil(
@@ -292,6 +305,8 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       body: widget.splash
           ? Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage('images/splash_screen.jpg'),

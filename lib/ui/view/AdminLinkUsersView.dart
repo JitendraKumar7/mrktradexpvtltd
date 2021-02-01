@@ -156,7 +156,7 @@ print('mapvalue${email}');
               children: <Widget>[
                 Center(
                   child: Text(
-                    'PERSONAL INFO',
+                    'Activity Details',
                     style: TextStyle(
                         fontSize: 18,
                         color: Colors.black,
